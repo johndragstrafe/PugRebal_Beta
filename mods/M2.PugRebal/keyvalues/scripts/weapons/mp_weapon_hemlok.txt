@@ -1,0 +1,81 @@
+WeaponData
+{
+
+	MP_BASE
+	{
+		"viewkick_air_scale_ads"						"1"
+	}
+
+	Mods
+	{
+		iron_sights
+		{
+
+		}
+		hcog
+		{
+
+		}
+		redline_sight
+		{
+
+		}
+		threat_scope
+		{
+
+		}
+		smart_lock
+		{
+
+		}
+		pro_screen
+		{
+
+		}
+		pas_run_and_gun
+		{
+			//Starburst
+			"fire_rate"							"20"
+			"burst_fire_count"					"5"
+			"burst_fire_delay"					"0.24"
+			"ammo_clip_size"					"25"
+			"viewkick_pitch_base"				"-1"
+			"viewkick_pitch_hardScale"			"1.65"
+			"viewkick_scale_min_ads"			"0.25"
+			"viewkick_pitch_random"				"0.6"
+			"viewkick_yaw_base"					"0.2"
+			"viewkick_yaw_random"				"1.1"
+			"viewkick_yaw_hardScale"			"0.7"
+		}
+		pas_fast_reload
+		{
+
+		}
+		extended_ammo
+		{
+			"ammo_clip_size"   					"++6"
+			"ammo_default_total"				"450"
+			"ammo_stockpile_max"				"450"
+		}
+		pas_fast_ads
+		{
+
+		}
+		pas_fast_swap
+		{
+
+		}
+		burn_mod_hemlok
+		{
+
+		}
+		tactical_cdr_on_kill
+		{
+
+		}
+		base_lowttk
+		{
+			"viewkick_air_scale_ads"	"1.2"
+		}
+	}
+}

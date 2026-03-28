@@ -1,0 +1,45 @@
+{
+	"Name": "M2.PugRebal_Beta",
+	"Description": "extra fried keyvalues",
+	"Version": "0.0.2",
+	"LoadPriority": 3,
+	"RequiredOnClient": true,
+	"ConVars": [],
+	
+	"Scripts": [
+		{
+			"Path": "sh_PUGkvfix.nut",
+			"RunOn": "CLIENT || SERVER",
+			"ClientCallback": {
+				"After": "PugRebalance_KVFix_ClInit"
+			},
+			"ServerCallback": {
+				"After": "PugRebalance_KVFix_Init"
+			}
+		},
+		{
+			"Path": "sh_PUGriffs.gnut",
+			"RunOn": "( CLIENT || SERVER ) && MP",
+			"ClientCallback": {
+				"After": "Riff_BetaRebalInit"
+			},
+			"ServerCallback": {
+				"After": "Riff_BetaRebalInit"
+			}
+		},
+		{
+			"Path": "_PUGdamage.gnut",
+			"RunOn": "SERVER",
+			"ServerCallback": {
+				"After": "DamageReworkInit"
+			}
+		},
+        {
+            "Path": "_PUGloadouts.nut",
+            "RunOn": "SERVER && MP",
+            "ServerCallback": {"Before": "InitPUGRebalLoadouts"}
+        }
+	],
+	
+	"Localisation": ["resource/rebalriffs_%language%.txt"]
+}

@@ -1,0 +1,7 @@
+WeaponData
+{
+	MP_BASE
+	{
+		"explosion_damage"								"100"
+	}
+}

@@ -1,0 +1,11 @@
+#base "pilot_base.set"
+"pilot_mp"
+{
+	"global"
+	{
+		grapple_detachSpeedLossMin              500
+	}
+}
+
+
+

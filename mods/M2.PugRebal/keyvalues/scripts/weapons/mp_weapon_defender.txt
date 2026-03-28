@@ -1,0 +1,92 @@
+WeaponData
+{
+
+	MP_BASE
+	{
+		"damage_near_value"   							"100"
+		"damage_far_value"								"100"
+	}
+
+	Mods
+	{
+		slammer
+		{
+		}
+		
+  		pro_screen
+        {
+		
+        }
+		
+        extended_ammo
+		{
+
+		}
+		
+		burn_mod_defender
+		{
+
+		}
+
+		quick_charge
+		{
+			"charge_time" 									"*0.33"
+			"charge_cooldown_time"							"*0.66"
+			"charge_cooldown_delay"   						"0.0"
+			"charge_end_forces_fire"						"0"
+
+			"damage_near_value"   							"50"
+			"damage_far_value"								"50"
+			"damage_near_value_titanarmor"					"--325"
+			"damage_far_value_titanarmor" 					"--325"
+
+			"spread_stand_hip"								"0"
+			"spread_stand_hip_run"							"0"
+			"spread_stand_ads"								"0"
+			"spread_stand_hip_sprint"                       "0"
+			"spread_crouch_hip"   							"0"
+			"spread_crouch_ads"   							"0"
+			"spread_air_hip"  								"0"
+			"spread_air_ads"  								"0"
+
+			"impulse_force"   								"50000"
+		}
+
+		PROTO_at_turret
+		{
+
+		}
+		pas_fast_ads
+		{
+		
+		}
+		pas_fast_swap
+		{
+
+		}
+		tactical_cdr_on_kill
+		{
+
+		}
+		pas_run_and_gun
+		{
+
+		}
+		pas_fast_reload
+		{
+
+		}
+		pveBase
+		{
+
+		}
+		at_unlimited_ammo
+		{
+
+		}
+		longNPCCharge
+		{
+
+		}
+	}
+}

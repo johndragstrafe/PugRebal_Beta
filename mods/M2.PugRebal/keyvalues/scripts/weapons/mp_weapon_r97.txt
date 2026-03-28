@@ -1,0 +1,45 @@
+WeaponData
+{
+	MP_BASE
+	{
+		"ammo_clip_size"   							"42"
+		"damage_near_value"	 						"18"
+		"spread_air_hip"  	 						"0"
+		"damage_headshot_scale"							"1.3"
+	}
+	Mods
+	{
+		iron_sights {}
+		holosight {}
+		redline_sight {}
+		threat_scope {}
+		smart_lock {}
+		pro_screen {}
+		tactical_cdr_on_kill {}
+		pas_fast_reload {}
+		extended_ammo 
+		{
+			"ammo_clip_size"   				"50"
+		}
+		pas_run_and_gun {}
+		pas_fast_ads {}
+		pas_fast_swap {}
+		burn_mod_r97 {}
+		base_lowttk
+		{
+			"damage_near_value"     			"20"
+			"spread_air_hip"				"1.0"
+			"damage_headshot_scale"				"1.5"
+		}
+		gunrunner_animation
+		{
+			"activitymodifier"				"pistol" // use alternator/pistol animation
+			"primary_fire_does_not_block_sprint"		"1"
+			"crosshair_force_sprint_fade_disabled"		"1"
+		}
+		gunrunner_sprintout
+		{
+			"raise_from_sprint_time" 			"0.01"
+		}
+	}
+}

@@ -1,0 +1,29 @@
+WeaponData
+{
+    Mods
+    {
+        iron_sights {}
+        holosight {}
+        redline_sight {}
+        threat_scope {}
+        pas_fast_reload {}
+        tactical_cdr_on_kill {}
+        extended_ammo {}
+        pro_screen {}
+        pas_run_and_gun {}
+        pas_fast_ads {}
+        pas_fast_swap {}
+        burn_mod_shotgun {}
+        
+		gunrunner_animation
+		{
+			"activitymodifier"	"pistol" // use alternator/pistol animation
+			"primary_fire_does_not_block_sprint"	"1"
+			"crosshair_force_sprint_fade_disabled"	"1"
+		}
+		gunrunner_sprintout
+		{
+			"raise_from_sprint_time" "0.01"
+		}
+    }
+}

@@ -1,0 +1,67 @@
+WeaponData
+{
+
+	"ammo_clip_size"   							"33"
+	"damage_near_distance"							"1100"
+
+	MP_BASE
+	{
+		"damage_near_value"   							"22"
+		"damage_far_value"							"14"
+   	 	"damage_very_far_value"							"9"
+		"damage_very_far_distance"						"2735"
+		"damage_headshot_scale"							"1.35"
+		"spread_air_hip"							"0"
+	}
+	Mods
+	{
+		iron_sights {}
+		holosight {}
+		redline_sight {}
+		threat_scope {}
+		smart_lock {}
+		pro_screen {}
+		pas_fast_reload {}
+		extended_ammo
+		{
+			"ammo_stockpile_max"				"450"
+			"ammo_default_total"				"450"
+			"ammo_clip_size"   				"38"
+		}
+		pas_fast_ads {}
+		pas_fast_swap {}
+		pas_run_and_gun {}
+		tactical_cdr_on_kill {}
+		burn_mod_car {}
+		base_lowttk
+		{
+			"damage_near_value"   				"25"
+			"damage_far_value"				"13"
+   	 		"damage_very_far_value"				"9"
+			"spread_air_hip"				"1.5"
+			"ammo_clip_size"   				"30"
+			"damage_near_distance"				"1000"
+			"damage_far_distance" 				"1500"
+			"damage_very_far_distance"			"3000"
+			"damage_headshot_scale"				"1.5"
+
+
+		}
+		extended_ammo_lowttk
+		{
+			"ammo_stockpile_max"	"450"
+			"ammo_default_total"	"450"
+			"ammo_clip_size"   		"++6"
+		}
+		gunrunner_animation
+		{
+			"activitymodifier"				"pistol" // use alternator/pistol animation
+			"primary_fire_does_not_block_sprint"		"1"
+			"crosshair_force_sprint_fade_disabled"		"1"
+		}
+		gunrunner_sprintout
+		{
+			"raise_from_sprint_time" 			"0.01"
+		}
+	}
+}

@@ -1,0 +1,37 @@
+WeaponData
+{
+	"projectile_launch_speed"						"3600"
+
+	MP_BASE
+	{
+		"damage_near_value_titanarmor"					"150"
+		"damage_far_value_titanarmor" 					"150"
+	}
+
+	Mods 
+	{
+		slammer {}
+		jump_kit {}
+		pro_screen {}
+		extended_ammo {}
+		delayed_shot {}
+		pas_fast_reload {}
+		burn_mod_smr {}
+		pas_fast_ads {}
+		pas_fast_swap {}
+		tactical_cdr_on_kill {}
+		pas_run_and_gun {}
+		sp_s2s_settings {}
+
+		gunrunner_animation
+		{
+			"activitymodifier"	"pistol" // use alternator/pistol animation
+			"primary_fire_does_not_block_sprint"	"1"
+			"crosshair_force_sprint_fade_disabled"	"1"
+		}
+		gunrunner_sprintout
+		{
+			"raise_from_sprint_time" "0.01"
+		}
+	}
+}

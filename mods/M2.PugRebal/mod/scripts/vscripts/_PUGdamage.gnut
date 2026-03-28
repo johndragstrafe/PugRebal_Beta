@@ -1,0 +1,373 @@
+untyped
+global function print_damageInfo
+global function manage_headshots
+global function apply_custom_damage_profile
+global function leg_damage
+global function DamageReworkInit
+global function set_custom_damage_profile
+global function new_custom_damage_profile
+
+
+
+void function DamageReworkInit() {
+    load_custom_dmg_profile()
+}
+
+// floats because of NS JSON limitations
+struct DamageNode {
+    float distance
+    float damage
+}
+
+struct DamageProfile {
+    float headshot_multiplier
+    array<DamageNode> nodes
+}
+
+struct {
+    array<int> precisionweapons = [
+        eDamageSourceId.mp_weapon_dmr,
+        eDamageSourceId.mp_weapon_sniper,
+        eDamageSourceId.mp_weapon_doubletake,
+        eDamageSourceId.mp_weapon_wingman,
+        eDamageSourceId.mp_weapon_wingman_n // idk man
+    ]
+    array<int> closeweapons = [
+        eDamageSourceId.mp_weapon_shotgun,
+        eDamageSourceId.mp_weapon_shotgun_pistol,
+        eDamageSourceId.mp_weapon_mastiff // anakin lookin touchable
+    ]
+    array<int> legweapons = [
+        eDamageSourceId.mp_weapon_car,
+        eDamageSourceId.mp_weapon_hemlok_smg,
+        eDamageSourceId.mp_weapon_r97,
+        eDamageSourceId.mp_weapon_alternator_smg,
+        eDamageSourceId.mp_weapon_rspn101,
+        eDamageSourceId.mp_weapon_rspn101_og,
+        eDamageSourceId.mp_weapon_vinson,
+        eDamageSourceId.mp_weapon_lmg,
+        eDamageSourceId.mp_weapon_esaw,
+        eDamageSourceId.mp_weapon_shotgun,
+        eDamageSourceId.mp_weapon_wingman,
+        eDamageSourceId.mp_weapon_autopistol,
+        eDamageSourceId.mp_weapon_semipistol
+    ]
+    table<
+        string, // weaponname
+        DamageProfile
+    > custom_profiles
+    struct {
+        table<int, int> total_hits
+        table<int, int> leg_effected
+        table<int, int> hs_effected
+    } stats
+} file
+
+
+void function print_damageInfo(entity victim, var damageInfo) {
+    entity attacker = DamageInfo_GetAttacker(damageInfo)
+    entity inflictor = DamageInfo_GetInflictor(damageInfo)
+    entity weapon = DamageInfo_GetWeapon(damageInfo) 
+    bool forceKill = DamageInfo_GetForceKill(damageInfo)
+    float damage = DamageInfo_GetDamage(damageInfo)
+    float critScale = DamageInfo_GetDamageCriticalHitScale(damageInfo)
+    vector damageOrigin = DamageInfo_GetDamagePosition(damageInfo)
+    int hitGroup = DamageInfo_GetHitGroup(damageInfo)
+    int hitBox = DamageInfo_GetHitBox(damageInfo)
+    string deathPackage = DamageInfo_GetDeathPackage(damageInfo)
+    int damageType = DamageInfo_GetDamageType(damageInfo)
+    int customDamageType = DamageInfo_GetCustomDamageType(damageInfo)
+    int sourceId = DamageInfo_GetDamageSourceIdentifier(damageInfo)
+    float viewPunchMul = DamageInfo_GetViewPunchMultiplier(damageInfo)
+    float distance = DamageInfo_GetDistFromAttackOrigin(damageInfo)
+    float explosionDistance = DamageInfo_GetDistFromExplosionCenter(damageInfo)
+    vector damageForce = DamageInfo_GetDamageForce(damageInfo)
+    bool ragdoll = DamageInfo_IsRagdollAllowed(damageInfo)
+    int damageFlags = DamageInfo_GetDamageFlags(damageInfo)
+    var weaponNameVar = DamageInfo_GetDamageWeaponName(damageInfo)
+    bool recordStats = DamageInfo_ShouldRecordStatsForWeapon(damageInfo)
+    
+    bool critWeapon = CritWeaponInDamageInfo( damageInfo )
+    bool isHeadshot = IsValidHeadShot( damageInfo, victim, attacker, weapon, hitGroup, distance, inflictor )
+    bool isCritical = IsCriticalHit( attacker, victim, hitBox, damage, damageType )
+        
+    printt("damageinfo")
+    printt("attacker|" + attacker.GetClassName())
+    printt("inflictor|" + inflictor.GetClassName())
+    printt("weapon|" + (weapon == null ? "null" : weapon.GetClassName()))
+    printt("forceKill|" + forceKill.tostring())
+    printt("damage|" + damage.tostring())
+    printt("critScale|" + critScale.tostring())
+    printt("damageOrigin|" + damageOrigin.tostring())
+    printt("hitGroup|" + hitGroup.tostring())
+    printt("hitBox|" + hitBox.tostring())
+    printt("deathPackage|" + deathPackage.tostring())
+    printt("damageType|" + damageType.tostring())
+    printt("customDamageType|" + customDamageType.tostring())
+    printt("sourceId|" + sourceId.tostring())
+    printt("viewPunchMul|" + viewPunchMul.tostring())
+    printt("distance|" + distance.tostring())
+    printt("explosionDistance|" + explosionDistance.tostring())
+    printt("damageForce|" + damageForce.tostring())
+    printt("ragdoll|" + ragdoll.tostring())
+    printt("damageFlags|" + damageFlags.tostring())
+    printt("weaponName|" + (weaponNameVar == null ? "null" : expect string(weaponNameVar)))
+    printt("recordStats|" + recordStats.tostring())
+    printt("\n")
+    printt("critweapon|" + critWeapon.tostring());
+    printt("isCritical|" + isCritical.tostring());
+    printt("isHeadshot|" + isHeadshot.tostring());
+    printt(victim.GetHealth())
+    printt("--------")
+}
+
+void function remove_headshot ( var damageInfo ) {
+    entity weapon = DamageInfo_GetWeapon(damageInfo)
+    if (!IsValid(weapon) || weapon == null) return;
+    
+    float damage = DamageInfo_GetDamage(damageInfo)
+    float critmul = 1.0
+    var output = weapon.GetWeaponInfoFileKeyField("damage_headshot_scale")
+    if (output != null) {
+        critmul = expect float( weapon.GetWeaponInfoFileKeyField("damage_headshot_scale") )
+    }
+    else {
+        critmul = weapon.GetWeaponSettingFloat(eWeaponVar.damage_headshot_scale)
+    }
+
+    if ( GetCurrentPlaylistVarInt("riff_damage_rework", 0) ) {
+        var weaponNameVar = DamageInfo_GetDamageWeaponName(damageInfo)
+        string weaponName = (weaponNameVar == null ? "null" : expect string(weaponNameVar));
+        if (weaponName != "null" && weaponName in file.custom_profiles) {
+            critmul = file.custom_profiles[weaponName].headshot_multiplier;
+        }
+    }
+    
+    DamageInfo_SetDamage(damageInfo, damage / critmul)
+    DamageInfo_RemoveCustomDamageType(damageInfo, DF_HEADSHOT)
+
+}
+
+void function manage_headshots(entity victim, var damageInfo)
+{
+	if ( !IsValid(victim) || !victim.IsHuman() ) // dont apply to titans
+		return
+
+    entity attacker = DamageInfo_GetAttacker(damageInfo)
+    entity inflictor = DamageInfo_GetInflictor(damageInfo)
+    entity weapon = DamageInfo_GetWeapon(damageInfo) 
+    int sourceId = DamageInfo_GetDamageSourceIdentifier(damageInfo)
+    bool critWeapon = CritWeaponInDamageInfo( damageInfo )
+    float distance = DamageInfo_GetDistFromAttackOrigin(damageInfo)
+    int hitGroup = DamageInfo_GetHitGroup(damageInfo)
+
+    
+    bool isHeadshot = IsValidHeadShot( damageInfo, victim, attacker, weapon, hitGroup, distance, inflictor )
+    
+    
+    if (sourceId in file.precisionweapons)
+        return
+
+        
+    
+    if (critWeapon && isHeadshot) {
+        int headshotmode = GetCurrentPlaylistVarInt( "riff_headshots", 0 );
+        if (
+            (headshotmode == 1 && !victim.IsOnGround())
+            || (headshotmode == 2 && distance < 500 && !(sourceId in file.closeweapons))
+            || (headshotmode == 3 && distance > 2000)
+            || (headshotmode == 4)
+        )
+            remove_headshot( damageInfo )
+    }
+    
+    // grounded vs air
+    // <500u
+    // >2000u
+    // always
+    // legs???
+}
+
+void function leg_damage( entity victim, var damageInfo )
+{
+	if ( !IsValid(victim) || !victim.IsHuman() ) // dont apply to titans
+		return
+        
+    int sourceId = DamageInfo_GetDamageSourceIdentifier(damageInfo)
+    if (!(sourceId in file.legweapons)) // only apply to certain weapons for now
+        return
+        
+    float leg_multiplier = GetCurrentPlaylistVarFloat("riff_leg_damage", 1.0)
+    float damage = DamageInfo_GetDamage(damageInfo)
+    int hitGroup = DamageInfo_GetHitGroup(damageInfo)
+    if (hitGroup == 6 || hitGroup == 7) {
+        DamageInfo_SetDamage(damageInfo, damage * leg_multiplier)
+    }
+}
+
+void function set_custom_damage_profile( string weaponName, array<float> profileVec ) {
+    // change a damage profile from script
+    if (profileVec.len() < 3 || (profileVec.len() % 2) != 1) {
+        printt("[STRAFE] set_custom_damage_profile failed for `" + weaponName + "` | bad custom profile format")
+        return;
+    }
+    DamageProfile profile;
+    profile.headshot_multiplier = profileVec[0];
+    for (int i = 1; i < profileVec.len(); i += 2) {
+        DamageNode newNode;
+        newNode.distance = profileVec[i];
+        newNode.damage = profileVec[i+1];
+        profile.nodes.append(newNode)
+    }
+    file.custom_profiles[weaponName] <- profile;
+}
+
+void function new_custom_damage_profile( string weaponName, array<float> profileVec ) {
+    // only changes profile if it doesnt exist (eg. to set a default)
+    if (!(weaponName in file.custom_profiles))
+        set_custom_damage_profile(weaponName, profileVec)
+}
+
+void function apply_custom_damage_profile(entity victim, var damageInfo) {
+    if ( !(GetCurrentPlaylistVarInt("riff_damage_rework", 0)) )
+        return
+	if ( !IsValid(victim) || !victim.IsHuman() ) // dont apply to titans
+		return
+    
+    entity attacker = DamageInfo_GetAttacker(damageInfo)
+    entity inflictor = DamageInfo_GetInflictor(damageInfo)
+    entity weapon = DamageInfo_GetWeapon(damageInfo) 
+    int sourceId = DamageInfo_GetDamageSourceIdentifier(damageInfo)
+    bool critWeapon = CritWeaponInDamageInfo( damageInfo )
+    float distance = DamageInfo_GetDistFromAttackOrigin(damageInfo)
+    int hitGroup = DamageInfo_GetHitGroup(damageInfo)
+    bool isHeadshot = IsValidHeadShot( damageInfo, victim, attacker, weapon, hitGroup, distance, inflictor )
+
+    var weaponNameVar = DamageInfo_GetDamageWeaponName(damageInfo)
+    string weaponName = (weaponNameVar == null ? "null" : expect string(weaponNameVar))
+
+    if (weaponName != "null" && weaponName in file.custom_profiles) {
+        float newdamage = calculate_custom_distance_damage(weaponName, distance)
+        if (isHeadshot) newdamage *= file.custom_profiles[weaponName].headshot_multiplier;
+        DamageInfo_SetDamage(damageInfo, newdamage)
+    }
+}
+float function calculate_custom_distance_damage(string weaponName, float distance) {
+    DamageProfile profile = file.custom_profiles[weaponName];
+    int prevnode = 0;
+    int nextnode = 0;
+    for (int i = 0; i < profile.nodes.len(); i++) {
+        nextnode = i;
+        if (distance < profile.nodes[nextnode].distance) {
+            break;
+        }
+        prevnode = nextnode;
+    }
+    float damage = GraphCapped(
+        distance,
+        profile.nodes[prevnode].distance, profile.nodes[nextnode].distance,
+        profile.nodes[prevnode].damage, profile.nodes[nextnode].damage
+    )
+    return floor(damage);
+}
+
+struct dmgprof {
+    array<int> dmg,
+    array<int> dist,
+    float hsm
+}
+
+void function load_custom_dmg_profile () {
+    string filename = "damageprofile.json"
+    if (NSDoesFileExist(filename)) {
+        printt("[STRAFE] loading custom damage profiles")
+        NSLoadJSONFile(filename, onSuccess_profiles)
+    }
+    else {
+        //printt("[STRAFE] saving example custom damage profile to `<profile>/save_data/<mod directory name>/" + filename + "`")
+        //table<
+        //    string, // weaponname
+        //    array<float> // fucking cursed
+        //> example_pf = {
+        //    mp_weapon_alternator_smg =  [1.5,250,40,1000,30,1500,30,2200,24,3500,20] // values for semiauto alternator
+        //}
+        //coerse_cancerous_table_format(example_pf)
+        //write_cancerous_table_format(filename)
+    }
+}
+
+void function onSuccess_profiles( table t_untyped ) {
+    // convert untyped table to typed table
+    table<string, array<float> > t_typed;
+    foreach (var key, var val in t_untyped) {
+        string strkey = expect string(key);
+        array arr_untyped = expect array(val);
+        array<float> arr_typed = []
+        foreach (var entry in arr_untyped) {
+            // if you expect a float, but the entry doesnt have a decimal point, it fucking dies
+            // use string instead, then cast to float (yes squirrel has cancer)
+            string num_untyped = expect string(entry);
+            float num_typed = num_untyped.tofloat();
+            arr_typed.append( num_typed );
+        }
+        t_typed[strkey] <- arr_typed
+    }
+    coerse_cancerous_table_format( t_typed )
+}
+
+void function coerse_cancerous_table_format ( table< string, array<float> > t_cancer ) {
+    // cancer workaround to NS JSON table limitations
+    // build profile struct out of flat vec
+    table<string, DamageProfile> converted;
+    foreach (string key, array<float> vec in t_cancer) {
+        if (vec.len() < 3) {
+            printt("[STRAFE] bad custom profile format `" + key + "` | float vec must have 3 values (hsm, dist0, dmg0)")
+            continue;
+        }
+        if ((vec.len() % 2) != 1) {
+            printt("[STRAFE] bad custom profile format `" + key + "` | float vec must have an odd # of values (hsm, dist0, dmg0, dist1, dmg1 ...)")
+            continue;
+        }
+        DamageProfile newprof;
+        newprof.headshot_multiplier = vec[0]
+        newprof.nodes = [];
+        float profdistance = -1;
+        int error = 0;
+        for (int i = 1; i < vec.len(); i += 2) {
+            DamageNode newnode;
+            newnode.distance = vec[i];
+            newnode.damage = vec[i+1];
+            if (newnode.distance <= profdistance) { // i am not sorting these bro
+                printt("[STRAFE] bad custom profile format `" + key + "` | distances must be in asc order")
+                error = 1;
+                break;
+            }
+            newprof.nodes.append(newnode)
+        }
+        if (error) {
+            continue;
+        }
+        file.custom_profiles[key] <- newprof
+    }
+}
+
+void function write_cancerous_table_format ( string filename ) {
+    table<string, array<string> > t_cancer;
+    foreach (string key, DamageProfile profile in file.custom_profiles) {
+        // NS json doesnt support structs
+        // have to use string because otherwise squirrel shits itself trying to read in floats
+        array<string> flattened; 
+        flattened.append(profile.headshot_multiplier.tostring());
+        foreach(DamageNode node in profile.nodes) {
+            flattened.append(node.distance.tostring())
+            flattened.append(node.damage.tostring())
+        }
+        t_cancer[key] <- flattened;
+    }
+    NSSaveJSONFile(filename, t_cancer)
+}
+
+
+
+// DamageDef_GetName
+//  

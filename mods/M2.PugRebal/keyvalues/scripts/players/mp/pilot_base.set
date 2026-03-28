@@ -1,0 +1,17 @@
+"pilot_base"
+{
+	"global"
+	{
+		grapple_airAccel				350
+		grapple_gravityFracMin				0.25
+		grapple_gravityFracMax				0.7
+		
+	}
+	
+	"stand"
+	{
+		viewheight 				"0 0 54"
+		firstpersonproxyoffset			"0 0 -54"
+	}
+}
+

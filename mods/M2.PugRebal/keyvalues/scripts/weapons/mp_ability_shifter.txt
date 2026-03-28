@@ -1,0 +1,33 @@
+WeaponData
+{
+	"toss_pullout_time"								"0.01667"
+	"toss_time"										"0.01667"
+	"toss_overhead_time"							"0.01667"
+	"holster_time"									"0.01667"
+	"deploy_time" 									"0.01667"
+	"lower_time"  									"0.01667"
+	"raise_time"  									"0.01667"
+	Mods
+	{
+		pas_power_cell {}
+		dev_mod_low_recharge {}
+		long_last_shifter {}
+		short_shift {}
+		sp_shift {}
+		spree_lvl1_shifter {}
+		spree_lvl2_shifter {}
+		spree_lvl3_shifter {}
+		pm0 {}
+		pm1 {}
+		pm2 {}
+		amped_tacticals {}
+		all_phase {}
+		phase_teleport
+		{
+			"fire_duration"									"0.2"
+			"toss_pullout_time"								"0.2"
+			"toss_time"										"0.35"
+			"toss_overhead_time"							"0.35"
+		}
+	}
+}

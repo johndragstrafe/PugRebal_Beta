@@ -1,0 +1,30 @@
+WeaponData
+{
+	Mods
+	{
+		jump_kit {}
+		pro_screen {}
+		extended_ammo {}
+        delayed_shot {}
+        slammer {}
+        pas_fast_ads {}
+        pas_fast_swap {}
+        burn_mod_epg {}
+        tactical_cdr_on_kill {}
+        pas_run_and_gun {}
+        pas_fast_reload {}
+        slowProjectile {}
+        rocket_arena {}
+        
+		gunrunner_animation
+		{
+			"activitymodifier"	"pistol" // use alternator/pistol animation
+			"primary_fire_does_not_block_sprint"	"1"
+			"crosshair_force_sprint_fade_disabled"	"1"
+		}
+		gunrunner_sprintout
+		{
+			"raise_from_sprint_time" "0.01"
+		}
+	}
+}

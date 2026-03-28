@@ -1,0 +1,56 @@
+WeaponData
+{
+	MP_BASE
+	{
+		"ammo_clip_size"   							"28"
+		"damage_near_value"   							"22"//33
+		"damage_headshot_scale"							"1.35"
+		"viewkick_air_scale_ads"						"1.0"
+	}
+	"viewkick_pitch_hardScale"						"0.3"
+	"viewkick_yaw_hardScale"  						"0.6"
+	"viewkick_scale_max_ads"  						"2.0" // equal to rspn101_og
+
+	Mods
+	{
+		iron_sights {}
+		hcog {}
+		redline_sight {}
+		threat_scope {}
+		extended_ammo
+		{
+			"ammo_stockpile_max"					"450"
+			"ammo_clip_size"   					"34"
+			"ammo_default_total"					"450"
+		}
+		tactical_cdr_on_kill {}
+		pas_run_and_gun {}
+		smart_lock {}
+		pro_screen {}
+		pas_fast_reload {}
+		pas_fast_ads {}
+		pas_fast_swap {}
+		burn_mod_rspn101 {}
+		base_lowttk
+		{
+			"damage_near_value"   				"25"
+			"damage_headshot_scale"				"1.5"
+			"viewkick_air_scale_ads"			"1.2"
+			"ammo_clip_size"				"24"
+		}
+		extended_ammo_lowttk
+		{
+			"ammo_clip_size"				"++6"
+		}
+		gunrunner_animation
+		{
+			"activitymodifier"				"pistol" // use alternator/pistol animation
+			"primary_fire_does_not_block_sprint"		"1"
+			"crosshair_force_sprint_fade_disabled"		"1"
+		}
+		gunrunner_sprintout
+		{
+			"raise_from_sprint_time" "0.01"
+		}
+	}
+}

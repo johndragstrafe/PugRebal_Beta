@@ -1,0 +1,52 @@
+global function Riff_BetaRebalInit
+
+void function Riff_BetaRebalInit()
+{
+	AddPrivateMatchModeSettingArbitrary( "Beta Rebalances",
+		"riff_aimpunch", "0.0" ) // default 0.0x
+	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+		"riff_phasetp", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "1" ) // default on
+	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+		"riff_regennerf", [ "#SETTING_DISABLED", "Stim Only", "Always" ], "0" )
+	AddPrivateMatchModeSettingArbitrary( "Beta Rebalances",
+		"riff_thickoutline", "1.5" )
+	AddPrivateMatchModeSettingArbitrary( "Beta Rebalances",
+		"riff_fastmantle", "0.4" ) // default 0.4x
+	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+		"riff_headshots", [ "#SETTING_DISABLED", "Air", "<500", ">2000", "Always" ], "0" )
+	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+		"riff_screenshake", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "1" ) // default on
+	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+		"riff_ttktoggle", [ "High TTK (6.0)", "Low TTK (5.2)" ], "0" )
+	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+		"riff_gunrunner", [ "Vanilla", "Banned", "Rework Animation", "Sprintout Time" ], "1" )
+	//AddPrivateMatchModeSettingEnum( "Beta Rebalances", "riff_damage_rework", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "0" )
+	//AddPrivateMatchModeSettingArbitrary( "Beta Rebalances", "riff_leg_damage", "1.0" )
+	#if SERVER
+	AddCallback_GameStateEnter( eGameState.Playing, BetaRebalConvars );
+	AddDamageCallback("player", manage_headshots );
+	//AddDamageCallback("player", apply_custom_damage_profile );
+	//AddDamageCallback("player", leg_damage );
+	#endif
+
+}
+
+#if SERVER
+void function BetaRebalConvars()
+{
+	float mantlemul = GetCurrentPlaylistVarFloat( "riff_fastmantle", 0.4 );
+	table<string, float> mantlevars = {
+		automantle_duration_above = 0.5,
+		automantle_duration_below = 1.11,
+		automantle_duration_high = 0.35,
+		automantle_duration_level = 1.0
+	}
+	foreach (string key, float val in mantlevars) {
+		float newval = max( val*mantlemul, 0.0167 )
+		SetConVarFloat( key, newval )
+	}
+
+	float aimpunch_scale = GetCurrentPlaylistVarFloat( "riff_aimpunch", 0.0 );
+	SetConVarFloat( "viewpunch_predictable_scalar", aimpunch_scale )
+}
+#endif

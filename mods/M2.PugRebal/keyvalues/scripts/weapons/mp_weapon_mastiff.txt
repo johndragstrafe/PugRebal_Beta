@@ -1,0 +1,36 @@
+WeaponData
+{
+    MP_BASE{
+	"damage_near_value"   							"24"
+	"damage_far_value"							"10"
+	"damage_near_distance"							"280"
+	"damage_far_distance" 							"780"
+    }
+    Mods
+    {
+        iron_sights {}
+        holosight {}
+        redline_sight {}
+        threat_scope {}
+        extended_ammo {}
+        tactical_cdr_on_kill {}
+        pro_screen {}
+        pas_run_and_gun {}
+        pas_fast_ads {}
+        pas_fast_swap {}
+        pas_fast_reload {}
+        burn_mod_mastiff {}
+        
+		gunrunner_animation
+		{
+			"activitymodifier"	"pistol" // use alternator/pistol animation
+			"primary_fire_does_not_block_sprint"	"1"
+			"crosshair_force_sprint_fade_disabled"	"1"
+		}
+		gunrunner_sprintout
+		{
+			"raise_from_sprint_time" "0.01"
+		}
+    }
+    "allow_headshots" 								"0"
+}

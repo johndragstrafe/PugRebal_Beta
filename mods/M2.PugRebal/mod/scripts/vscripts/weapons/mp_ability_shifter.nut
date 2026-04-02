@@ -261,6 +261,7 @@ void function AbilityShifter_DisplaceTeleport( entity player )
     if ( Length(translation) > 32 ) {
         StartParticleEffectInWorldWithControlPoint( GetParticleSystemIndex($"wpn_arc_cannon_beam"), startpos, VectorToAngles(translation), endpos)
     }
+    CancelPhaseShift( player );
 	#endif
 }
 

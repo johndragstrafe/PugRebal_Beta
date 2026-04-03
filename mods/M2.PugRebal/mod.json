@@ -1,7 +1,7 @@
 {
-	"Name": "M2.PugRebal_Beta",
+	"Name": "M2.PugRebalance",
 	"Description": "extra fried keyvalues",
-	"Version": "0.0.2",
+	"Version": "1.0.1",
 	"LoadPriority": 3,
 	"RequiredOnClient": true,
 	"ConVars": [],

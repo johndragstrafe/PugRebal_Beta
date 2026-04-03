@@ -22,7 +22,6 @@ global function Grenade_OnWeaponTossPrep
 global function Grenade_OnProjectileIgnite
 
 #if SERVER
-	global function GrenadeProximityCheck
 	global function Grenade_OnPlayerNPCTossGrenade_Common
 	global function ProxMine_Triggered
 	global function EnableTrapWarningSound
@@ -482,7 +481,7 @@ void function GrenadeProximityCheck( entity grenade, entity weaponOwner, float r
 		}
 	)
 	int teamNum = weaponOwner.GetTeam()
-	float innerRadiusCheck = radiusCheck / 2
+	float innerRadiusCheck = radiusCheck / 1.6
 	while( IsValid( grenade ) && IsValid( weaponOwner ) )
 	{
 		// discordlogsendmessage("I did not stop tracking cause I'm useful")
@@ -493,19 +492,51 @@ void function GrenadeProximityCheck( entity grenade, entity weaponOwner, float r
 			if ( ShouldSetOffProximityMine( grenade, ent ) && ent.GetTeam() != teamNum /*&& IsAlive( weaponOwner )*/)
 			{
 				// lexi was here
-				
-				foreach (entity enemy in nearbyEnemies){
-				if (enemy.IsOnGround() &&  !enemy.IsTitan()){
-				int Iweigh50kg = 90
-				vector newpos = <(enemy.GetOrigin().x*Iweigh50kg+grenade.GetOrigin().x*(100-Iweigh50kg))/100,(enemy.GetOrigin().y*Iweigh50kg+grenade.GetOrigin().y*(100-Iweigh50kg))/100,(enemy.GetOrigin().z*1+enemy.EyePosition().z*1)/2>
-				grenade.SetOrigin( newpos)}
+				if(GetCurrentPlaylistVarInt("riff_fragtoggle", 0) == 0){
+					foreach (entity enemy in nearbyEnemies){
+						if ( enemy.IsOnGround() && !enemy.IsTitan() && !enemy.IsWallRunning() ){
+
+							int scaleFactor = 10 //scales the xy impulse the enemy receives (smaller is more) *note: if zOverride decreases the xy velocity will increase at the same value
+							float zOverride = 8 //scales the upwards impulse the enemy recieves (larger is more)
+						
+							//working implementation
+							vector originalXY = grenade.GetOrigin() - enemy.GetWorldSpaceCenter()
+							originalXY.z = 0
+							originalXY = Normalize(originalXY)
+							vector actualSplode = originalXY*scaleFactor
+							actualSplode.z = -(zOverride)
+							//printt(actualSplode)
+							actualSplode += enemy.GetWorldSpaceCenter()
+
+							grenade.SetOrigin(actualSplode)
+						}else if( (!enemy.IsOnGround() && !enemy.IsTitan()) || (!enemy.IsTitan() && enemy.IsWallRunning()) ){
+							int scaleFactor = 90 //scales impulse the enemy receives (lower is more)
+							vector betternormalised = Normalize( grenade.GetOrigin() - enemy.GetWorldSpaceCenter() )
+							vector grenSplodePoint = enemy.GetWorldSpaceCenter() + betternormalised*scaleFactor
+
+							grenade.SetOrigin(grenSplodePoint)
+						}
+					}
+				}else{
+					foreach ( entity enemy in nearbyEnemies ){
+						if ( enemy.IsOnGround() &&  !enemy.IsTitan() && !enemy.IsWallRunning() ){
+							int Iweigh50kg = 90
+							int centerDiff = 12
+							vector newpos = <(enemy.GetOrigin().x*Iweigh50kg+grenade.GetOrigin().x*(100-Iweigh50kg))/100, (enemy.GetOrigin().y*Iweigh50kg+grenade.GetOrigin().y*(100-Iweigh50kg))/100, enemy.GetWorldSpaceCenter().z - centerDiff>
+
+							grenade.SetOrigin(newpos)		
+						}else if( (!enemy.IsOnGround() && !enemy.IsTitan()) || (!enemy.IsTitan() && enemy.IsWallRunning()) ){
+							int Iweighless = 90
+							vector newpos = <(enemy.GetOrigin().x*Iweighless+grenade.GetOrigin().x*(100-Iweighless))/100, (enemy.GetOrigin().y*Iweighless+grenade.GetOrigin().y*(100-Iweighless))/100, ((enemy.GetWorldSpaceCenter().z)*Iweighless+grenade.GetOrigin().z*(100-Iweighless))/100>
+					
+							grenade.SetOrigin(newpos)
+						}
+					}
 				}
-				
 				grenade.GrenadeExplode( < 0, 0, 1 > )
 				return
 			}
 		}
-
 		WaitFrame()
 	}
 }

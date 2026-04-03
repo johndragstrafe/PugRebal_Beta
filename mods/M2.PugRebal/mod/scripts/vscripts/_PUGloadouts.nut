@@ -8,13 +8,14 @@ void function InitPUGRebalLoadouts()
 void function OverridePUGPilotLoadout( entity player, PilotLoadoutDef loadout )
 {
 	give_phasetp(player)
-	low_ttk_mods(player);
+	low_ttk_mods(player)
 	give_semi_alternator(player)
-	gunrunner_mods(player);
+	gunrunner_mods(player)
+	//frag_toggle(player) //no kv changed needed - got it all working in _grenade.nut
 }
 void function give_phasetp( entity player ) {
 	if (GetCurrentPlaylistVarInt("riff_phasetp", 1) != 1) {
-		return;
+		return
 	}
 	if ( player.GetOffhandWeapon( OFFHAND_SPECIAL ).GetWeaponClassName() == "mp_weapon_grenade_sonar" ) // Replace pulse blade with instant teleport phase shift
 	{
@@ -24,10 +25,10 @@ void function give_phasetp( entity player ) {
 }
 void function give_semi_alternator( entity player ) {
 	if (GetCurrentPlaylistVarInt( "riff_semialternator", 0 ) != 1) {
-		return;
+		return
 	}
 	
-    array<entity> weapons = player.GetMainWeapons();
+    array<entity> weapons = player.GetMainWeapons()
     foreach (entity weapon in weapons) {
         if (weapon.GetWeaponClassName() == "mp_weapon_alternator_smg") {
 			if (weapon.HasMod("base_lowttk")) {
@@ -40,12 +41,12 @@ void function give_semi_alternator( entity player ) {
 }
 void function low_ttk_mods( entity player ) {
 	if (GetCurrentPlaylistVarInt( "riff_ttktoggle", 0 ) != 1) {
-		return;
+		return
 	}
-	array<entity> weapons = player.GetMainWeapons();
+	array<entity> weapons = player.GetMainWeapons()
     foreach (entity weapon in weapons) {
 		string name = weapon.GetWeaponClassName()
-		array<string> appliedmods = weapon.GetMods();
+		array<string> appliedmods = weapon.GetMods()
 		array<string> availableMods = GetWeaponMods_Global(name)
 
 		foreach (string mod in appliedmods) {
@@ -66,24 +67,33 @@ void function low_ttk_mods( entity player ) {
 		catch (ex) {}
     }
 }
+/*void function frag_toggle( entity player ){
+	if(GetCurrentPlaylistVarInt("riff_fragtoggle", 0) == 1){
+		return
+	}
+	if(player.GetOffhandWeapon( OFFHAND_RIGHT ).GetWeaponClassName() == "mp_weapon_frag_grenade"){
+		player.GetOffhandWeapon( OFFHAND_RIGHT ).AddMod("normed_frags") 
+	}
+}*/
+
 void function gunrunner_mods( entity player ) {
 	int gunrunnermode = GetCurrentPlaylistVarInt( "riff_gunrunner", 1 )
 	array<string> altgunrunner = [ "pas_run_and_gun", "", "gunrunner_animation", "gunrunner_sprintout" ]
 	if (gunrunnermode == 0) {
-		return;
+		return
 	}
-	array<entity> weapons = player.GetMainWeapons();
+	array<entity> weapons = player.GetMainWeapons()
     foreach (entity weapon in weapons) {
 		string name = weapon.GetWeaponClassName()
 		if (name == "mp_weapon_hemlok") {
-			continue; // hemlok "gunrunner" = starburst
+			continue // hemlok "gunrunner" = starburst
 		}
 		array<string> availableMods = GetWeaponMods_Global(name)
 		if (!availableMods.contains("gunrunner_animation")) {
-			continue;
+			continue
 		}
 
-		array<string> appliedmods = weapon.GetMods();
+		array<string> appliedmods = weapon.GetMods()
 		foreach (string mod in appliedmods) {
 			if (mod == "pas_run_and_gun") {
 				weapon.RemoveMod(mod)

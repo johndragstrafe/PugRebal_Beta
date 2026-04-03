@@ -1,6 +1,7 @@
 WeaponData
 {
     MP_BASE{
+	"ammo_clip_size"   							"5"
 	"damage_near_value"   							"24"
 	"damage_far_value"							"10"
 	"damage_near_distance"							"280"
@@ -12,7 +13,10 @@ WeaponData
         holosight {}
         redline_sight {}
         threat_scope {}
-        extended_ammo {}
+        extended_ammo 
+	{
+		"ammo_clip_size"   							"++3"
+	}
         tactical_cdr_on_kill {}
         pro_screen {}
         pas_run_and_gun {}

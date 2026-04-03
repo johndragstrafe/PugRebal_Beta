@@ -1,6 +1,6 @@
 {
     "name": "PugRebalance",
-    "version_number": "1.0.0",
+    "version_number": "1.0.1",
     "website_url": "https://discord.gg/9ppY4Ngevx",
     "description": "Rebalance mod for CTF Pugs. Initially written by MrBlaBlak and Aoloach, with lots of features added by Voltiac_Gold and new weapon balance option by Ryukaro",
     "dependencies": []

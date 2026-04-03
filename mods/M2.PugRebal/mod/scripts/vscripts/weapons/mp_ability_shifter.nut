@@ -187,7 +187,7 @@ void function DoPhaseExitExplosion( entity player, entity phaseWeapon )
 void function AbilityShifter_DisplaceTeleport( entity player )
 {
 	#if SERVER
-	wait 0.2
+	wait 0.1
     vector startpos = player.GetOrigin()
 	entity telefragEntity
 	vector endpos = startpos
@@ -261,6 +261,7 @@ void function AbilityShifter_DisplaceTeleport( entity player )
     if ( Length(translation) > 32 ) {
         StartParticleEffectInWorldWithControlPoint( GetParticleSystemIndex($"wpn_arc_cannon_beam"), startpos, VectorToAngles(translation), endpos)
     }
+	CancelPhaseShift(player)
 	#endif
 }
 

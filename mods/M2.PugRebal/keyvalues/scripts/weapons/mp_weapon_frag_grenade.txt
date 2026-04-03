@@ -5,7 +5,7 @@ WeaponData
 		"explosion_damage"								"20"
 	}
 	"impulse_force"									"8000"
-	"impulse_force_explosions"							"50000"
+	"impulse_force_explosions"							"48000"
 	"explosion_shake_radius"						"0"
 	"explosion_shake_amplitude"						"0"
 	"explosion_shake_frequency"						"0"

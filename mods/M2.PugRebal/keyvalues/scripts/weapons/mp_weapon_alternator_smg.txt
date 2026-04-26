@@ -5,7 +5,7 @@ WeaponData
 	// fix sounds
 	"looping_sounds"				"0"
 	"fire_sound_3_player_1p"			"Weapon_Alternator_FirstShot_1P"
-	"fire_sound_3_player_3p"	 		"Weapon_Alternator_FirstShot_1P"
+	"fire_sound_3_player_3p"	 		"Weapon_Alternator_FirstShot_3P"
 
 	"fire_rate"					"6"
 

@@ -1,0 +1,6 @@
+WeaponData
+{
+    // multiply pilot dmg by .96 to match 125hp ttk dropoff on 120hp
+	"damage_near_value"	    "43" // 45
+	"damage_far_value"	    "38" // 40
+}

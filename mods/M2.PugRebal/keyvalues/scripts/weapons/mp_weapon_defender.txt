@@ -3,6 +3,7 @@ WeaponData
 
 	MP_BASE
 	{
+		"ammo_no_remove_from_stockpile"		"1" // infinite ammo
 		"damage_near_value"   							"100"
 		"damage_far_value"								"100"
 	}

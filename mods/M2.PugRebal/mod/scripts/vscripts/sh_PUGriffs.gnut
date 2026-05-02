@@ -22,12 +22,10 @@ void function Riff_BetaRebalInit()
 		"riff_gunrunner", [ "Vanilla", "Banned", "Rework Animation", "Sprintout Time" ], "1" )
 	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
 		"riff_fragtoggle", [ "Normalized", "Lerped"], "0" )
-	//AddPrivateMatchModeSettingEnum( "Beta Rebalances", "riff_damage_rework", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "0" )
 	//AddPrivateMatchModeSettingArbitrary( "Beta Rebalances", "riff_leg_damage", "1.0" )
 	#if SERVER
 	AddCallback_GameStateEnter( eGameState.Playing, BetaRebalConvars );
 	AddDamageCallback("player", manage_headshots );
-	//AddDamageCallback("player", apply_custom_damage_profile );
 	//AddDamageCallback("player", leg_damage );
 	#endif
 

@@ -1,0 +1,61 @@
+untyped
+global function print_damageInfo
+
+void function print_damageInfo(entity victim, var damageInfo) {
+    entity attacker         = DamageInfo_GetAttacker(damageInfo)
+    entity inflictor        = DamageInfo_GetInflictor(damageInfo)
+    entity weapon           = DamageInfo_GetWeapon(damageInfo) 
+    bool forceKill          = DamageInfo_GetForceKill(damageInfo)
+    float damage            = DamageInfo_GetDamage(damageInfo)
+    float critScale         = DamageInfo_GetDamageCriticalHitScale(damageInfo)
+    vector damageOrigin     = DamageInfo_GetDamagePosition(damageInfo)
+    int hitGroup            = DamageInfo_GetHitGroup(damageInfo)
+    int hitBox              = DamageInfo_GetHitBox(damageInfo)
+    string deathPackage     = DamageInfo_GetDeathPackage(damageInfo)
+    int damageType          = DamageInfo_GetDamageType(damageInfo)
+    int customDamageType    = DamageInfo_GetCustomDamageType(damageInfo)
+    int sourceId            = DamageInfo_GetDamageSourceIdentifier(damageInfo)
+    float viewPunchMul      = DamageInfo_GetViewPunchMultiplier(damageInfo)
+    float distance          = DamageInfo_GetDistFromAttackOrigin(damageInfo)
+    float explosionDistance = DamageInfo_GetDistFromExplosionCenter(damageInfo)
+    vector damageForce      = DamageInfo_GetDamageForce(damageInfo)
+    bool ragdoll            = DamageInfo_IsRagdollAllowed(damageInfo)
+    int damageFlags         = DamageInfo_GetDamageFlags(damageInfo)
+    var weaponNameVar       = DamageInfo_GetDamageWeaponName(damageInfo)
+    bool recordStats        = DamageInfo_ShouldRecordStatsForWeapon(damageInfo)
+    
+    bool critWeapon = CritWeaponInDamageInfo( damageInfo )
+    bool isHeadshot = IsValidHeadShot( damageInfo, victim, attacker, weapon, hitGroup, distance, inflictor )
+    bool isCritical = IsCriticalHit( attacker, victim, hitBox, damage, damageType )
+
+    string weaponCName = (weapon == null ? "null" : weapon.GetClassName())
+    string weaponName = (weaponNameVar == null ? "null" : expect string(weaponNameVar))
+        
+    printt("-- damageinfo --")
+    printt("attacker|"          + attacker.GetClassName())
+    printt("inflictor|"         + inflictor.GetClassName())
+    printt("weapon|"            + weaponCName)
+    printt("forceKill|"         + forceKill.tostring())
+    printt("damage|"            + damage.tostring())
+    printt("critScale|"         + critScale.tostring())
+    printt("damageOrigin|"      + damageOrigin.tostring())
+    printt("hitGroup|"          + hitGroup.tostring())
+    printt("hitBox|"            + hitBox.tostring())
+    printt("deathPackage|"      + deathPackage.tostring())
+    printt("damageType|"        + damageType.tostring())
+    printt("customDamageType|"  + customDamageType.tostring())
+    printt("sourceId|"          + sourceId.tostring())
+    printt("viewPunchMul|"      + viewPunchMul.tostring())
+    printt("distance|"          + distance.tostring())
+    printt("explosionDistance|" + explosionDistance.tostring())
+    printt("damageForce|"       + damageForce.tostring())
+    printt("ragdoll|"           + ragdoll.tostring())
+    printt("damageFlags|"       + damageFlags.tostring())
+    printt("weaponName|"        + weaponName)
+    printt("recordStats|"       + recordStats.tostring())
+    printt("critweapon|"        + critWeapon.tostring());
+    printt("isCritical|"        + isCritical.tostring());
+    printt("isHeadshot|"        + isHeadshot.tostring());
+    printt("victim: "           + victim.GetHealth().tostring())
+    printt("--------")
+}

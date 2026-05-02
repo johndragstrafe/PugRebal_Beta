@@ -1,7 +1,7 @@
 {
 	"Name": "M2.PugRebalance",
 	"Description": "extra fried keyvalues",
-	"Version": "1.0.1",
+	"Version": "2.0.0",
 	"LoadPriority": 3,
 	"RequiredOnClient": true,
 	"ConVars": [],
@@ -18,6 +18,12 @@
 			}
 		},
 		{
+			"Path": "_PUGdev.gnut",
+			"RunOn": "SERVER",
+			"ServerCallback": {
+			}
+		},
+		{
 			"Path": "sh_PUGriffs.gnut",
 			"RunOn": "( CLIENT || SERVER ) && MP",
 			"ClientCallback": {
@@ -31,7 +37,6 @@
 			"Path": "_PUGdamage.gnut",
 			"RunOn": "SERVER",
 			"ServerCallback": {
-				"After": "DamageReworkInit"
 			}
 		},
         {

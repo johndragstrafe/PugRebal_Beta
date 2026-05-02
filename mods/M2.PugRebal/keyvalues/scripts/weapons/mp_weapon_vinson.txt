@@ -20,7 +20,13 @@ WeaponData
 		pas_fast_reload {}
 		pas_fast_ads {}
 		pas_fast_swap {}
-		burn_mod_vinson {}
+		burn_mod_vinson
+		{
+			"damage_near_value"      "*0"
+			"damage_far_value"       "*0"
+			"damage_very_far_value"  "*0"
+			"tracer_effect" ""
+		}
 		test_impacts {}
 		tactical_cdr_on_kill {}
 		training_low_ammo_disable {}

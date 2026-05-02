@@ -1,0 +1,24 @@
+WeaponData
+{
+	Mods
+	{
+		iron_sights {}
+		scope_4x {}
+		threat_scope {}
+		pro_screen {}
+		pas_fast_reload {}
+		pas_fast_ads {}
+		pas_fast_swap {}
+		extended_ammo {}
+		stabilizer {}
+		slammer {}
+		burn_mod_dmr
+		{
+			"damage_near_value"      "*0"
+			"damage_far_value"       "*0"
+			"damage_very_far_value"  "*0"
+			"tracer_effect" ""
+		}
+		tactical_cdr_on_kill {}
+	}
+}

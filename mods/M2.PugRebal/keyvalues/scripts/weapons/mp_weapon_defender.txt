@@ -25,7 +25,10 @@ WeaponData
 		
 		burn_mod_defender
 		{
-
+			"damage_near_value"      "*0"
+			"damage_far_value"       "*0"
+			"damage_very_far_value"  "*0"
+			"tracer_effect" ""
 		}
 
 		quick_charge

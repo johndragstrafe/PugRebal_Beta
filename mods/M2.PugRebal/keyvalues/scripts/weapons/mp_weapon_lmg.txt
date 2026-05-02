@@ -20,7 +20,13 @@ WeaponData
 		pas_fast_swap {}
 		tactical_cdr_on_kill {}
 		pas_run_and_gun {}
-		burn_mod_lmg {}
+		burn_mod_lmg
+		{
+			"damage_near_value"      "*0"
+			"damage_far_value"       "*0"
+			"damage_very_far_value"  "*0"
+			"tracer_effect" ""
+		}
 		gunrunner_animation
 		{
 			"activitymodifier"	"pistol" // use alternator/pistol animation

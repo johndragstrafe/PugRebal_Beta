@@ -19,7 +19,7 @@ void function Riff_BetaRebalInit()
 	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
 		"riff_ttktoggle", [ "High TTK (6.0)", "Low TTK (5.2)" ], "0" )
 	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
-		"riff_gunrunner", [ "Vanilla", "Banned", "Rework Animation", "Sprintout Time" ], "1" )
+		"riff_gunrunner", [ "Vanilla", "Banned", "Rework Animation", "Sprintout Time" ], "2" )
 	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
 		"riff_fragtoggle", [ "Normalized", "Lerped"], "0" )
 	//AddPrivateMatchModeSettingArbitrary( "Beta Rebalances", "riff_leg_damage", "1.0" )

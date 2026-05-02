@@ -77,7 +77,7 @@ void function low_ttk_mods( entity player ) {
 }*/
 
 void function gunrunner_mods( entity player ) {
-	int gunrunnermode = GetCurrentPlaylistVarInt( "riff_gunrunner", 1 )
+	int gunrunnermode = GetCurrentPlaylistVarInt( "riff_gunrunner", 2 )
 	array<string> altgunrunner = [ "pas_run_and_gun", "", "gunrunner_animation", "gunrunner_sprintout" ]
 	if (gunrunnermode == 0) {
 		return

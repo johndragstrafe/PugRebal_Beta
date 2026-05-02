@@ -1,0 +1,37 @@
+WeaponData
+{
+	MP_BASE
+	{
+		"explosion_inner_radius"	"48"
+		"explosionradius"			"75"
+	}
+	Mods
+	{
+		slammer {}
+		jump_kit {}
+		pro_screen {}
+        extended_ammo {}
+        pas_fast_ads {}
+        pas_fast_swap {}
+        burn_mod_pulse_lmg {}
+        tactical_cdr_on_kill {}
+        pas_run_and_gun {}
+		pas_fast_reload {}
+		
+        base_lowttk
+		{
+			"explosion_inner_radius"	"*2" // 96
+			"explosionradius"			"*2" // 150
+		}
+		gunrunner_animation
+		{
+			"activitymodifier"	"pistol" // use alternator/pistol animation
+			"primary_fire_does_not_block_sprint"	"1"
+			"crosshair_force_sprint_fade_disabled"	"1"
+		}
+		gunrunner_sprintout
+		{
+			"raise_from_sprint_time" "0.01"
+		}
+	}
+}

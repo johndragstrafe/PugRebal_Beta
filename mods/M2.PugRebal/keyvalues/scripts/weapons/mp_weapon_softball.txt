@@ -2,33 +2,32 @@ WeaponData
 {
 	MP_BASE
 	{
-		"damage_near_value"		"120"
-		"damage_far_value"		"120"
+		"damage_near_value"		"60"
+		"damage_far_value"		"60"
 		"explosion_damage"		"60"
 	}
-	"explosion_inner_radius"	"20"
+	"explosion_inner_radius"	"33"
 	"explosionradius"			"100"
 	Mods
 	{
-		jump_kit {}
-		pro_screen {}
+		ar_trajectory {}
 		extended_ammo {}
-        delayed_shot {}
-        slammer {}
+		pro_screen {}
+        pro_screenextended_ammo {}
         pas_fast_ads {}
         pas_fast_swap {}
-        burn_mod_epg {}
-        tactical_cdr_on_kill {}
-        pas_run_and_gun {}
+        jump_kit {}
         pas_fast_reload {}
-        slowProjectile {}
-        rocket_arena {}
+        burn_mod_softball {}
+		tactical_cdr_on_kill {}
+        pas_run_and_gun {}
+		
         base_lowttk
 		{
-			"damage_near_value"			"*.83" // 100
-			"damage_far_value"			"*.83" // 100
+			"damage_near_value"			"*.167" // 10
+			"damage_far_value"			"*.167" // 10
 			"explosion_damage" 			"*1.5" // 90
-			"explosion_inner_radius"	"*1.5" // 30
+			"explosion_inner_radius"	"*1.5" // 50
 			"explosionradius"			"*1.5" // 150
 		}
 		gunrunner_animation

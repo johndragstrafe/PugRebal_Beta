@@ -1,0 +1,49 @@
+"titan_ogre_meteor"
+{
+    "global"
+    {
+        dodgeDuration		0.1
+        dodgeInterval		0.35
+        dodgeSpeed			800
+        dodgeStopSpeed		450
+        dodgePowerDrain		50
+		powerregenrate		10
+        dodgePowerDelay		0.2 
+
+        ClassMods
+		{
+			pas_mobility_dash_capacity
+			{
+				dodgePowerDrain		33 
+				powerregenrate		6.6 
+			}
+			fd_health_upgrade
+			{
+			}
+			turbo_titan
+			{
+				dodgePowerDrain		33
+				powerregenrate		16.5
+			}
+		}
+    }
+    "crouch"
+	{
+		speed			187
+		acceleration	250
+		deceleration	625
+	}
+
+	"stand"
+	{
+		speed				270
+		acceleration		1000
+		deceleration		1800
+
+		sprintspeed			310
+		sprintAcceleration	400
+
+		lowSpeed			230
+		lowAcceleration		1600
+	}
+}

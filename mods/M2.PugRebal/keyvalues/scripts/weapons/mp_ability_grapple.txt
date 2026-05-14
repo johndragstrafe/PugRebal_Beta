@@ -1,6 +1,5 @@
 WeaponData
 {
-	"grapple_maxLength"								"900"
-	"grapple_maxLengthVert"							"900"
-
+	// vanilla values
+	// keep file to overwrite when redownloading
 }

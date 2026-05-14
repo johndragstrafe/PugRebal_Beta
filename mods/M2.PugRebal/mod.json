@@ -43,7 +43,25 @@
             "Path": "_PUGloadouts.nut",
             "RunOn": "SERVER && MP",
             "ServerCallback": {"Before": "InitPUGRebalLoadouts"}
-        }
+        },
+		{
+			"Path": "gamemodes/cl_PUGStalemates.nut",
+			"RunOn": "CLIENT && MP"
+		},
+		{
+			"Path": "gamemodes/_PUGStalemates.nut",
+			"RunOn": "SERVER && MP"
+		},
+		{
+			"Path": "gamemodes/sh_PUGStalemates.nut",
+			"RunOn": "( CLIENT || SERVER ) && MP",
+			"ClientCallback": {
+				"Before": "PugRebalance_StalematesGamemode"
+			},
+			"ServerCallback": {
+				"Before": "PugRebalance_StalematesGamemode"
+			}
+		}
 	],
 	
 	"Localisation": ["resource/rebalriffs_%language%.txt"]

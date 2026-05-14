@@ -22,6 +22,8 @@ void function Riff_BetaRebalInit()
 		"riff_gunrunner", [ "Vanilla", "Banned", "Rework Animation", "Sprintout Time" ], "2" )
 	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
 		"riff_fragtoggle", [ "Normalized", "Lerped"], "0" )
+	AddPrivateMatchModeSettingArbitrary( "Beta Rebalances",
+		"ctf_stalemate_time", "45.0" ) // default 45s
 	//AddPrivateMatchModeSettingArbitrary( "Beta Rebalances", "riff_leg_damage", "1.0" )
 	#if SERVER
 	AddCallback_GameStateEnter( eGameState.Playing, BetaRebalConvars );

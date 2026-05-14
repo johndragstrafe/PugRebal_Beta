@@ -10,6 +10,7 @@ void function OverridePUGPilotLoadout( entity player, PilotLoadoutDef loadout )
 	give_phasetp(player)
 	low_ttk_mods(player)
 	give_semi_alternator(player)
+	mastiff_pellets(player)
 	gunrunner_mods(player)
 	//frag_toggle(player) //no kv changed needed - got it all working in _grenade.nut
 }
@@ -75,6 +76,18 @@ void function low_ttk_mods( entity player ) {
 		player.GetOffhandWeapon( OFFHAND_RIGHT ).AddMod("normed_frags") 
 	}
 }*/
+
+void function mastiff_pellets( entity player ) {
+	if (GetCurrentPlaylistVarInt("riff_mastiffpellets", 1) != 1) {
+		return
+	}
+	array<entity> weapons = player.GetMainWeapons()
+    foreach (entity weapon in weapons) {
+		if (weapon.GetWeaponClassName() == "mp_weapon_mastiff") {
+			tryaddmod_hahahaahahhaahahaha(weapon, "double_pellets")
+		}
+	}
+}
 
 void function gunrunner_mods( entity player ) {
 	int gunrunnermode = GetCurrentPlaylistVarInt( "riff_gunrunner", 2 )

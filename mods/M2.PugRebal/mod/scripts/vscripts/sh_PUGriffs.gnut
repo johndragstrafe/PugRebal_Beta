@@ -2,6 +2,8 @@ global function Riff_BetaRebalInit
 
 void function Riff_BetaRebalInit()
 {
+	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+		"pugs_highlander", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "0" )
 	AddPrivateMatchModeSettingArbitrary( "Beta Rebalances",
 		"riff_aimpunch", "0.0" ) // default 0.0x
 	AddPrivateMatchModeSettingEnum( "Beta Rebalances",

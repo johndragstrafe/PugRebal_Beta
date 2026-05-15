@@ -61,6 +61,16 @@
 			"ServerCallback": {
 				"Before": "PugRebalance_StalematesGamemode"
 			}
+		},
+		{
+			"Path": "sh_PUGHighlander.nut",
+			"RunOn": "( CLIENT || SERVER ) && MP",
+			"ServerCallback": {
+				"After": "PugRebalance_Highlander_Init"
+			},
+			"ClientCallback": {
+				"After": "PugRebalance_Highlander_Init"
+			}
 		}
 	],
 	

@@ -1,0 +1,14 @@
+WeaponData
+{
+    MP_BASE
+    {
+        "red_crosshair_range"   "2000"
+    }
+    RUI_CrosshairData
+    {
+        Crosshair_1
+        {
+            "ui"    "ui/crosshair_alternator"
+        }
+    }
+}

@@ -28,6 +28,8 @@ void function Riff_BetaRebalInit()
 		"ctf_stalemate_time", "75.0" ) // default 75s
 	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
 		"riff_mastiffpellets", [ "Vanilla", "Doubled" ], "1" )
+	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+		"riff_gravsuck", [ "#SETTING_ENABLED", "#SETTING_DISABLED" ], "0" )
 	//AddPrivateMatchModeSettingArbitrary( "Beta Rebalances", "riff_leg_damage", "1.0" )
 	#if SERVER
 	AddCallback_GameStateEnter( eGameState.Playing, BetaRebalConvars );

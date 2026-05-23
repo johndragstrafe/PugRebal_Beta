@@ -8,6 +8,11 @@ void function PugRebalance_Highlander_Init() {
             AddCallback_OnPlayerGetsNewPilotLoadout( ValidateLoadout )
         #endif
     }
+    if (IsLobby() || GetCurrentPlaylistVarInt("pugs_highlander", 0)) {
+        #if SERVER
+            AddCallback_OnReceivedSayTextMessage( HighlanderCommand )
+        #endif
+    }
 }
 
 #if SERVER
@@ -15,6 +20,7 @@ struct {
     array<string> highlander_exemptions = [
         "mp_weapon_thermite_grenade"
     ]
+    string prefix = "\x1b[31mHighlander: \x1b[0m"
 } file
 
 void function ValidateLoadout( entity player, PilotLoadoutDef loadout ) {
@@ -22,9 +28,8 @@ void function ValidateLoadout( entity player, PilotLoadoutDef loadout ) {
 
     table< string, array<entity> > conflicts
 
-    foreach (entity ally in GetPlayerArrayOfTeam_Alive( team )) {
-        //PilotLoadoutDef allyLoadout = GetActivePilotLoadout( ally )
-        //if (player == ally) continue
+    foreach (entity ally in GetPlayerArrayOfTeam( team )) {
+        if (player == ally) continue
         array<string> matches = CompareLoadouts(player, ally, loadout)
         foreach (string match in matches) {
             if (!(match in conflicts)) {
@@ -35,9 +40,7 @@ void function ValidateLoadout( entity player, PilotLoadoutDef loadout ) {
     }
 
     foreach (string conflict, array<entity> players in conflicts) {
-        string red = "\x1b[31m"
-        string reset = "\x1b[0m"
-        string msg = red + "Highlander: " + reset + conflict + " already in use by: "
+        string msg = file.prefix + conflict + " also in use by: "
         foreach (entity player in players) {
             msg += player.GetPlayerName() + ", "
         }
@@ -51,8 +54,8 @@ array<string> function CompareLoadouts( entity a, entity b, PilotLoadoutDef a_ne
     TitanLoadoutDef aT = GetActiveTitanLoadout(a)
     PilotLoadoutDef aP = a_newLoadout //GetActivePilotLoadout(a) // GetActiveLoadout gets the persisted loadout, not the new one. have to send in from the callback hahahaha
 
-    TitanLoadoutDef bT = GetActiveTitanLoadout(a)
-    PilotLoadoutDef bP = GetActivePilotLoadout(a)
+    TitanLoadoutDef bT = GetActiveTitanLoadout(b)
+    PilotLoadoutDef bP = GetActivePilotLoadout(b)
 
     if (aT.titanClass == bT.titanClass && file.highlander_exemptions.find(aT.titanClass) < 0) {
         matches.append(aT.titanClass)
@@ -62,5 +65,14 @@ array<string> function CompareLoadouts( entity a, entity b, PilotLoadoutDef a_ne
     }
     
     return matches
+}
+
+ClServer_MessageStruct function HighlanderCommand(ClServer_MessageStruct message) {
+    if (message.message != "/highlander") return message
+
+    message.shouldBlock = true
+    Chat_PrivateMessage(message.player, message.player, "/highlander", true)
+    ValidateLoadout(message.player, GetActivePilotLoadout(message.player))
+    return message
 }
 #endif

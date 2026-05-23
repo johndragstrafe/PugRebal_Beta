@@ -5,7 +5,7 @@ global function PugRebalance_StalematesInit_cl
 struct
 {
 	var rui = null
-    float duration = 45.0
+    float duration = 75.0
 } timer
 
 void function PugRebalance_StalematesInit_cl() {

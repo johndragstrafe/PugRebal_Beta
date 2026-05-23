@@ -25,7 +25,7 @@ void function Riff_BetaRebalInit()
 	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
 		"riff_fragtoggle", [ "Normalized", "Lerped"], "0" )
 	AddPrivateMatchModeSettingArbitrary( "Beta Rebalances",
-		"ctf_stalemate_time", "45.0" ) // default 45s
+		"ctf_stalemate_time", "75.0" ) // default 75s
 	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
 		"riff_mastiffpellets", [ "Vanilla", "Doubled" ], "1" )
 	//AddPrivateMatchModeSettingArbitrary( "Beta Rebalances", "riff_leg_damage", "1.0" )

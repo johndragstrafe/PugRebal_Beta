@@ -31,7 +31,7 @@ void function RegisterNetVars()
 }
 
 void function PugRebalance_StalematesInit_sh() {
-    file.stalemate_timer = GetCurrentPlaylistVarFloat( "ctf_stalemate_time", 45.0 )
+    file.stalemate_timer = GetCurrentPlaylistVarFloat( "ctf_stalemate_time", 75.0 )
 }
 
 float function PugRebalance_Get_Stalemate_Time() {

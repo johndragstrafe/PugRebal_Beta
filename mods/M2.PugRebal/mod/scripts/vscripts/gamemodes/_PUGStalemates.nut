@@ -3,6 +3,7 @@ untyped
 global function PugRebalance_StalematesInit_sv
 
 void function PugRebalance_StalematesInit_sv() {
+    //Chat_ServerBroadcast("i love spamming other peoples servers with chat messages when i have a good reason")
     thread threaded_StalemateInit_sv()
 }
 
@@ -33,7 +34,7 @@ void function threaded_StalemateInit_sv() {
 }
 
 void function StalemateDecide(entity flag) {
-    printt("decideFired")
+    //Chat_ServerBroadcast("state changed")
     int team = flag.GetTeam()
     int enemyTeam = GetOtherTeam( team )
     entity enemyFlag = GetFlagForTeam( enemyTeam )
@@ -52,22 +53,22 @@ void function StalemateDecide(entity flag) {
             EndStalemate()
         break;
     }
-    printt("friendlystate: " + GetFlagState(flag).tostring())
-    printt("enemystate: " + GetFlagState(enemyFlag).tostring())
+    //Chat_ServerBroadcast(team.tostring() + " friendlystate: " + GetFlagState(flag).tostring())
+    //Chat_ServerBroadcast(enemyTeam.tostring() + " enemystate: " + GetFlagState(enemyFlag).tostring())
 }
 
 void function threaded_StalemateTimer() {
 
-    GetFlagForTeam( TEAM_MILITIA ).EndSignal( "CTF_ReturnedFlag" )
 	GetFlagForTeam( TEAM_MILITIA ).EndSignal( "OnDestroy" )
-    GetFlagForTeam( TEAM_IMC ).EndSignal( "CTF_ReturnedFlag" )
 	GetFlagForTeam( TEAM_IMC ).EndSignal( "OnDestroy" )
 
     OnThreadEnd(
 	function() : ( )
 		{
-            ResetFlag( GetFlagForTeam( TEAM_MILITIA ) )
-            ResetFlag( GetFlagForTeam( TEAM_IMC ) )
+            if (file.stalemating) {
+                ResetFlag( GetFlagForTeam( TEAM_MILITIA ) )
+                ResetFlag( GetFlagForTeam( TEAM_IMC ) )
+            }
             EndStalemate()
 		}
 	)

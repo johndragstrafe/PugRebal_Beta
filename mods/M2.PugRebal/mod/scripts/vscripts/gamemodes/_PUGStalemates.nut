@@ -10,8 +10,6 @@ struct {
     bool stalemating = false
     bool paused = false
     float elapsed = 0.0
-    entity milFlag = null
-    entity imcFlag = null
 } file
 
 void function threaded_NetVarsXD() {
@@ -31,9 +29,6 @@ void function threaded_StalemateInit_sv() {
         WaitFrame()
     }
     thread threaded_NetVarsXD()
-
-    file.milFlag = GetFlagForTeam( TEAM_MILITIA )
-    file.imcFlag = GetFlagForTeam( TEAM_IMC )
     AddCallback_OnCTFFlagStateChange( StalemateDecide )
 }
 
@@ -48,7 +43,7 @@ void function StalemateDecide(entity flag) {
             PauseStalemate()
         break;
         case eFlagState.Held: // held
-            if (GetFlagState(enemyFlag) != eFlagState.Home) {
+            if (!IsFlagHome(enemyFlag)) {
                 PlayStalemate()
             }
         break;
@@ -62,15 +57,25 @@ void function StalemateDecide(entity flag) {
 }
 
 void function threaded_StalemateTimer() {
-    file.imcFlag.EndSignal( "CTF_ReturnedFlag" )
-	file.imcFlag.EndSignal( "OnDestroy" )
-    file.milFlag.EndSignal( "CTF_ReturnedFlag" )
-	file.milFlag.EndSignal( "OnDestroy" )
+
+    GetFlagForTeam( TEAM_MILITIA ).EndSignal( "CTF_ReturnedFlag" )
+	GetFlagForTeam( TEAM_MILITIA ).EndSignal( "OnDestroy" )
+    GetFlagForTeam( TEAM_IMC ).EndSignal( "CTF_ReturnedFlag" )
+	GetFlagForTeam( TEAM_IMC ).EndSignal( "OnDestroy" )
+
+    OnThreadEnd(
+	function() : ( )
+		{
+            ResetFlag( GetFlagForTeam( TEAM_MILITIA ) )
+            ResetFlag( GetFlagForTeam( TEAM_IMC ) )
+            EndStalemate()
+		}
+	)
 
     float stalemate_timeout = PugRebalance_Get_Stalemate_Time()
     file.elapsed = 0
     float oldTime = Time()
-    while (file.elapsed < stalemate_timeout) {
+    while (file.elapsed < stalemate_timeout && file.stalemating) {
         float newTime = Time()
         float delta = newTime - oldTime
         if (!file.paused) {
@@ -79,9 +84,6 @@ void function threaded_StalemateTimer() {
         oldTime = newTime;
         WaitFrame()
     }
-    ResetFlag( file.imcFlag )
-    ResetFlag( file.milFlag )
-    EndStalemate()
 
 }
 

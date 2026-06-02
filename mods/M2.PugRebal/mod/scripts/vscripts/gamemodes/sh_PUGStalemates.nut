@@ -12,14 +12,14 @@ void function PugRebalance_StalematesGamemode() {
     AddCallback_OnRegisteringCustomNetworkVars(RegisterNetVars)
 }
 void function AddFunc() {
-    array<string> gamemodes = [ CAPTURE_THE_FLAG ]
+    array<string> gamemodes = [ CAPTURE_THE_FLAG, GAMEMODE_CTF_COMP ]
     foreach (string gamemode in gamemodes ) {
-        GameMode_AddSharedInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_sh)
+        GameMode_AddSharedInit( gamemode, PugRebalance_StalematesInit_sh)
         #if CLIENT
-            GameMode_AddClientInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_cl)
+            GameMode_AddClientInit( gamemode, PugRebalance_StalematesInit_cl)
         #endif
         #if SERVER
-            GameMode_AddServerInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_sv)
+            GameMode_AddServerInit( gamemode, PugRebalance_StalematesInit_sv)
         #endif
     }
 }

@@ -51,8 +51,8 @@ void function StartTimer()
 	}
 	timer.rui = CreateCockpitRui( $"ui/circle_timer.rpak", 250 )
 	RuiSetString( timer.rui, "messageText", "Stalemate" )
-	// RuiSetImage(timer.rui, "imageName", $"")
-	RuiSetColorAlpha( timer.rui, "imageColor", < 1, 1, 0 >, 0.5 )
+	RuiSetImage( timer.rui, "imageName", $"rui/gencard_icons/dlc3/gc_icon_balance" )
+	RuiSetColorAlpha( timer.rui, "imageColor", < 1, 1, 1 >, 0.5 )
 	RuiSetGameTime( timer.rui, "startTime", Time() )
 	RuiSetGameTime( timer.rui, "endTime", Time() + timer.duration )
 }

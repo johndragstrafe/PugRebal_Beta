@@ -10,7 +10,12 @@ WeaponData
         pas_run_and_gun {}
         pas_fast_ads {}
         pas_fast_swap {}
-        burn_mod_autopistol {}
+        burn_mod_autopistol
+		{
+			"damage_near_value"      "*0"
+			"damage_far_value"       "*0"
+			"damage_very_far_value"  "*0"
+		}
         tactical_cdr_on_kill {}
         rocket_arena {}
 

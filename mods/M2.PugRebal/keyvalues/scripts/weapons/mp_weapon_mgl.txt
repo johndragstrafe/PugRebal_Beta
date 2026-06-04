@@ -1,0 +1,9 @@
+WeaponData
+{
+	"burst_fire_delay"	"0.55" // .7 -> .55
+
+	MP_BASE
+	{
+		"ammo_no_remove_from_stockpile"		"1" // infinite ammo
+	}
+}

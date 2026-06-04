@@ -13,7 +13,13 @@ WeaponData
         pas_run_and_gun {}
         pas_fast_ads {}
         pas_fast_swap {}
-        burn_mod_shotgun {}
+        burn_mod_shotgun
+		{
+			"damage_near_value"      "*0"
+			"damage_far_value"       "*0"
+			"damage_very_far_value"  "*0"
+			"tracer_effect" ""
+		}
         
 		gunrunner_animation
 		{

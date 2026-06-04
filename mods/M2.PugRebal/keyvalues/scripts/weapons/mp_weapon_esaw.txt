@@ -15,7 +15,13 @@ WeaponData
         pas_fast_ads {}
         pas_fast_swap {}
         pas_fast_reload {}
-        burn_mod_esaw {}
+        burn_mod_esaw
+		{
+			"damage_near_value"      "*0"
+			"damage_far_value"       "*0"
+			"damage_very_far_value"  "*0"
+			"tracer_effect" ""
+		}
         pas_run_and_gun {}
         
 		gunrunner_animation

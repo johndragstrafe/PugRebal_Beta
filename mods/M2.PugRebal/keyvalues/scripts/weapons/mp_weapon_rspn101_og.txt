@@ -29,7 +29,13 @@ WeaponData
 		pas_fast_reload {}
 		pas_fast_ads {}
 		pas_fast_swap {}
-		burn_mod_rspn101 {}
+		burn_mod_rspn101
+		{
+			"damage_near_value"      "*0"
+			"damage_far_value"       "*0"
+			"damage_very_far_value"  "*0"
+			"tracer_effect" ""
+		}
 		base_lowttk
 		{
 			"damage_near_value"   				"25"

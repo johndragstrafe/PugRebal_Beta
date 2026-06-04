@@ -4,5 +4,6 @@ WeaponData
 	{
 		"damage_near_distance"							"3200"
 		"damage_far_distance" 							"3200"
+        "red_crosshair_range"   "3200"
 	}
 }

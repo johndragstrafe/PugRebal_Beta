@@ -35,6 +35,11 @@ WeaponData
 		{
 			"raise_from_sprint_time" "0.01"
 		}
+        double_pellets
+        {
+            "damage_near_value" "*0.5"
+            "damage_far_value" "*0.5"
+        }
     }
     "allow_headshots" 								"0"
 }

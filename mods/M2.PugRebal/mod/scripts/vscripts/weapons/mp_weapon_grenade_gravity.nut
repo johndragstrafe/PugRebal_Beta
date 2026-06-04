@@ -1,3 +1,10 @@
+/*
+PUGREBAL: 
+- Gravity Star
+    - Lifetime: 2 -> 1.5
+    - suck toggle
+*/
+
 global function OnProjectileCollision_weapon_grenade_gravity
 global function MpWeaponGrenadeGravity_Init
 
@@ -113,6 +120,9 @@ void function GravityGrenadeThink( entity projectile, entity hitEnt, vector norm
 	entity gravTrig = CreateEntity( "trigger_point_gravity" )
 	// pull inner radius, pull outer radius, reduce speed inner radius, reduce speed outer radius, pull accel, pull speed, 0
 	gravTrig.SetParams( 0.0, PULL_RANGE * 2, 32, 128, 1500, 600 ) // more subtle pulling effect before popping up
+	if (GetCurrentPlaylistVarInt( "riff_gravsuck", 0 ) == 1) { // disable grav suck
+		gravTrig.SetParams( 0, 0, 0, 0, 0, 0 )
+	}
 	gravTrig.SetOrigin( projectile.GetOrigin() )
 	projectile.ClearParent()
 	projectile.SetParent( gravTrig )
@@ -170,6 +180,9 @@ void function GravityGrenadeThink( entity projectile, entity hitEnt, vector norm
 
 	// full strength radius, outer radius, reduce vel radius, accel, maxvel
 	gravTrig.SetParams( PULL_RANGE, PULL_RANGE * 2, 32, 128, 2000, 400 ) // more intense pull
+	if (GetCurrentPlaylistVarInt( "riff_gravsuck", 0 ) == 1) { // disable grav suck
+		gravTrig.SetParams( 0, 0, 0, 0, 0, 0 )
+	}
 
 	AI_CreateDangerousArea( projectile, projectile, PULL_RANGE * 2.0, TEAM_INVALID, true, false )
 

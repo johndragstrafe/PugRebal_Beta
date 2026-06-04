@@ -1,7 +1,7 @@
 {
 	"Name": "M2.PugRebalance",
 	"Description": "extra fried keyvalues",
-	"Version": "1.0.1",
+	"Version": "2.0.0",
 	"LoadPriority": 3,
 	"RequiredOnClient": true,
 	"ConVars": [],
@@ -18,6 +18,12 @@
 			}
 		},
 		{
+			"Path": "_PUGdev.gnut",
+			"RunOn": "SERVER",
+			"ServerCallback": {
+			}
+		},
+		{
 			"Path": "sh_PUGriffs.gnut",
 			"RunOn": "( CLIENT || SERVER ) && MP",
 			"ClientCallback": {
@@ -31,14 +37,41 @@
 			"Path": "_PUGdamage.gnut",
 			"RunOn": "SERVER",
 			"ServerCallback": {
-				"After": "DamageReworkInit"
 			}
 		},
         {
             "Path": "_PUGloadouts.nut",
             "RunOn": "SERVER && MP",
             "ServerCallback": {"Before": "InitPUGRebalLoadouts"}
-        }
+        },
+		{
+			"Path": "gamemodes/cl_PUGStalemates.nut",
+			"RunOn": "CLIENT && MP"
+		},
+		{
+			"Path": "gamemodes/_PUGStalemates.nut",
+			"RunOn": "SERVER && MP"
+		},
+		{
+			"Path": "gamemodes/sh_PUGStalemates.nut",
+			"RunOn": "( CLIENT || SERVER ) && MP",
+			"ClientCallback": {
+				"Before": "PugRebalance_StalematesGamemode"
+			},
+			"ServerCallback": {
+				"Before": "PugRebalance_StalematesGamemode"
+			}
+		},
+		{
+			"Path": "sh_PUGHighlander.nut",
+			"RunOn": "( CLIENT || SERVER ) && MP",
+			"ServerCallback": {
+				"After": "PugRebalance_Highlander_Init"
+			},
+			"ClientCallback": {
+				"After": "PugRebalance_Highlander_Init"
+			}
+		}
 	],
 	
 	"Localisation": ["resource/rebalriffs_%language%.txt"]

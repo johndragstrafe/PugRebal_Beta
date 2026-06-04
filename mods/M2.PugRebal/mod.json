@@ -52,7 +52,7 @@
 			"Path": "gamemodes/_PUGStalemates.nut",
 			"RunOn": "SERVER && MP",
 			"ServerCallback": {
-				"Before": "PugRebalance_StalematesInit_sv"
+				"After": "PugRebalance_StalematesInit_sv"
 			}
 		},
 		{

@@ -3,37 +3,48 @@ untyped
 global function PugRebalance_StalematesGamemode
 global function PugRebalance_Get_Stalemate_Time
 
-struct {
-    float stalemate_timer = 45.0
+struct
+{
+	float stalemate_timer = -1
 } file
 
-void function PugRebalance_StalematesGamemode() {
-    AddCallback_OnCustomGamemodesInit(AddFunc)
-    AddCallback_OnRegisteringCustomNetworkVars(RegisterNetVars)
+void function PugRebalance_StalematesGamemode()
+{
+	printt( "wqoidmwqoidnwqoinfwqoifnwq" )
+	AddCallback_OnCustomGamemodesInit( AddFunc )
+	AddCallback_OnRegisteringCustomNetworkVars( RegisterNetVars )
 }
-void function AddFunc() {
-    array<string> gamemodes = [ CAPTURE_THE_FLAG ]
-    foreach (string gamemode in gamemodes ) {
-        GameMode_AddSharedInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_sh)
-        #if CLIENT
-            GameMode_AddClientInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_cl)
-        #endif
-        #if SERVER
-            GameMode_AddServerInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_sv)
-        #endif
-    }
+void function AddFunc()
+{
+	array<string> gamemodes = [ CAPTURE_THE_FLAG ]
+	foreach ( string gamemode in gamemodes )
+	{
+		GameMode_AddSharedInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_sh )
+		#if CLIENT
+			GameMode_AddClientInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_cl )
+		#endif
+		#if SERVER
+			GameMode_AddServerInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_sv )
+		#endif
+	}
 }
 
 void function RegisterNetVars()
 {
-    RegisterNetworkedVariable("Stalemates_elapsed", SNDC_GLOBAL, SNVT_TIME, 0)
-    RegisterNetworkedVariable("Stalemates_stalemating", SNDC_GLOBAL, SNVT_BOOL, false)
+	RegisterNetworkedVariable( "Stalemates_elapsed", SNDC_GLOBAL, SNVT_TIME, 0 )
+	RegisterNetworkedVariable( "Stalemates_stalemating", SNDC_GLOBAL, SNVT_BOOL, false )
 }
 
-void function PugRebalance_StalematesInit_sh() {
-    file.stalemate_timer = GetCurrentPlaylistVarFloat( "ctf_stalemate_time", 75.0 )
+void function PugRebalance_StalematesInit_sh()
+{
+	file.stalemate_timer = GetCurrentPlaylistVarFloat( "ctf_stalemate_time", 75.0 )
 }
 
-float function PugRebalance_Get_Stalemate_Time() {
-    return file.stalemate_timer
+float function PugRebalance_Get_Stalemate_Time()
+{
+	if ( file.stalemate_timer < 0 )
+	{
+		file.stalemate_timer = GetCurrentPlaylistVarFloat( "ctf_stalemate_time", 75.0 )
+	}
+	return file.stalemate_timer
 }

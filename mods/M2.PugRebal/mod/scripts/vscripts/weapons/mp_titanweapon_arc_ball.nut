@@ -199,7 +199,7 @@ void function FireArcBall( entity weapon, vector pos, vector dir, bool shouldPre
 			}*/
 
             // nerf thunderbolt
-            if ( weapon.GetWeaponClassName() == "mp_weapon_arc_launcher" ) {
+            if ( (weapon.GetWeaponClassName() == "mp_weapon_arc_launcher") && (GetCurrentPlaylistVarInt("riff_thunderracist", 1) != 0) ) {
                 bolt.SetProjectileLifetime( 4 )
                 ballLightning.e.ballLightningData.radius *= .9
                 ballLightning.e.ballLightningData.damage *= .75

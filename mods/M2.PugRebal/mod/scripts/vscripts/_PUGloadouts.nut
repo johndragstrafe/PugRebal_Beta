@@ -13,6 +13,10 @@ void function OverridePUGPilotLoadout( entity player, PilotLoadoutDef loadout )
 	mastiff_pellets(player)
 	gunrunner_mods(player)
 	//frag_toggle(player) //no kv changed needed - got it all working in _grenade.nut
+	AT_rebal_toggle(player)
+	//discordlogsendmessage("iwanttodie")
+	toggle_Lstar_cancer(player)
+
 }
 void function give_phasetp( entity player ) {
 	if (GetCurrentPlaylistVarInt("riff_phasetp", 1) != 1) {
@@ -68,6 +72,7 @@ void function low_ttk_mods( entity player ) {
 		catch (ex) {}
     }
 }
+
 /*void function frag_toggle( entity player ){
 	if(GetCurrentPlaylistVarInt("riff_fragtoggle", 0) == 1){
 		return
@@ -77,8 +82,40 @@ void function low_ttk_mods( entity player ) {
 	}
 }*/
 
+void function AT_rebal_toggle(entity player){
+	array<entity> weapons = player.GetMainWeapons()
+	if(GetCurrentPlaylistVarInt("riff_atrebal", 0) != 1){
+		//discordlogsendmessage("int wrong")
+		return
+	}
+	foreach(atweapon in weapons){
+		if(
+			atweapon.GetWeaponClassName() == "mp_weapon_mgl" ||
+			atweapon.GetWeaponClassName() == "mp_weapon_rocket_launcher" ||
+			atweapon.GetWeaponClassName() == "mp_weapon_defender"
+		){
+			//discordlogsendmessage("racism")
+			tryaddmod_hahahaahahhaahahaha(atweapon, "base_atrebal")
+		}
+	}
+}
+
+
+void function toggle_Lstar_cancer(entity player){
+	array<entity> Ltest = player.GetMainWeapons()
+	if(GetCurrentPlaylistVarInt("riff_LstarUncancer", 1) != 1){
+		return
+	}
+	foreach(Lstar in Ltest){
+		if(Lstar.GetWeaponClassName() == "mp_weapon_lstar"){
+			tryaddmod_hahahaahahhaahahaha(Lstar, "less_cancer_lstar")
+		}
+	}
+}
+	
+
 void function mastiff_pellets( entity player ) {
-	if (GetCurrentPlaylistVarInt("riff_mastiffpellets", 1) != 1) {
+	if (GetCurrentPlaylistVarInt("riff_mastiffpellets", 0) != 1) {
 		return
 	}
 	array<entity> weapons = player.GetMainWeapons()
@@ -90,7 +127,7 @@ void function mastiff_pellets( entity player ) {
 }
 
 void function gunrunner_mods( entity player ) {
-	int gunrunnermode = GetCurrentPlaylistVarInt( "riff_gunrunner", 2 )
+	int gunrunnermode = GetCurrentPlaylistVarInt( "riff_gunrunner", 1 )
 	array<string> altgunrunner = [ "pas_run_and_gun", "", "gunrunner_animation", "gunrunner_sprintout" ]
 	if (gunrunnermode == 0) {
 		return

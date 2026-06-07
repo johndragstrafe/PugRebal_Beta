@@ -4,9 +4,8 @@ global function PugRebalance_StalematesInit_sv
 
 void function PugRebalance_StalematesInit_sv()
 {
-	printt( "wqoidmwqoidnwqoinfwqoifnwq" )
+	// Chat_ServerBroadcast("i love spamming other peoples servers with chat messages when i have a good reason")
 	thread threaded_StalemateInit_sv()
-	Chat_ServerBroadcast( "i love spamming other peoples servers with chat messages when i have a good reason" )
 }
 
 struct
@@ -38,7 +37,7 @@ void function threaded_StalemateInit_sv()
 
 void function StalemateDecide( entity flag )
 {
-	// Chat_ServerBroadcast( "state changed" )
+	//Chat_ServerBroadcast( "state changed" )
 	int team = flag.GetTeam()
 	int enemyTeam = GetOtherTeam( team )
 	entity enemyFlag = GetFlagForTeam( enemyTeam )
@@ -61,8 +60,8 @@ void function StalemateDecide( entity flag )
 			EndStalemate()
 			break
 	}
-	// Chat_ServerBroadcast( team.tostring() + " friendlystate: " + GetFlagState( flag ).tostring() )
-	// Chat_ServerBroadcast( enemyTeam.tostring() + " enemystate: " + GetFlagState( enemyFlag ).tostring() )
+	// Chat_ServerBroadcast(team.tostring() + " friendlystate: " + GetFlagState(flag).tostring())
+	// Chat_ServerBroadcast(enemyTeam.tostring() + " enemystate: " + GetFlagState(enemyFlag).tostring())
 }
 
 void function threaded_StalemateTimer()
@@ -83,7 +82,6 @@ void function threaded_StalemateTimer()
 	)
 
 	float stalemate_timeout = PugRebalance_Get_Stalemate_Time()
-	Chat_ServerBroadcast( "stalemate timeout: " + stalemate_timeout.tostring() )
 	file.elapsed = 0
 	float oldTime = Time()
 	while ( file.elapsed < stalemate_timeout && file.stalemating )

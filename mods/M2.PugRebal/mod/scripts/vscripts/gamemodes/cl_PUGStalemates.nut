@@ -24,7 +24,6 @@ void function threaded_ruiThink()
 	while ( true )
 	{
 		bool stalemating = GetGlobalNetBool( "Stalemates_stalemating" )
-
 		if ( stalemating != ( timer.rui != null ) )
 		{
 			if ( stalemating )

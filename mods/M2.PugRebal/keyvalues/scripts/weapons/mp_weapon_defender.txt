@@ -3,7 +3,6 @@ WeaponData
 
 	MP_BASE
 	{
-		"ammo_no_remove_from_stockpile"		"1" // infinite ammo
 		"damage_near_value"   							"100"
 		"damage_far_value"								"100"
 	}
@@ -91,6 +90,12 @@ WeaponData
 		longNPCCharge
 		{
 
+		}
+		base_atrebal{
+			"ammo_no_remove_from_stockpile"		"1" // infinite ammo
+			"damage_near_value_titanarmor"					"1250"
+			"damage_far_value_titanarmor" 					"925"
+			"charge_time" 									"1.1"
 		}
 	}
 }

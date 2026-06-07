@@ -6,31 +6,7 @@ WeaponData
 		"damage_far_value"								"20"
 		"spread_air_hip"  								"0"
 	}
-	"spread_stand_hip"								"0"
-	"spread_stand_hip_run"							"0"
-	"spread_stand_hip_sprint"                       "0"
-	"spread_crouch_hip"   							"0"
-
-	"spread_stand_ads"								"0"
-	"spread_crouch_ads"   							"0"
-	"spread_air_ads"  								"0"
-
-	"spread_wallrunning"  							"0"
-	"spread_wallhanging"  							"0"
-
-	"viewkick_scale_min_hipfire"		"0"
-	"viewkick_scale_max_hipfire"		"0"
-	"viewkick_scale_min_ads"			"0"
-	"viewkick_scale_max_ads"			"0"
-
-	"cooldown_viewkick_softScale"		"0"
-	"cooldown_viewkick_hardScale"		"0"
-
 	
-	"bolt_hitsize_grow1_size"						"1.0"
-	"bolt_hitsize_grow2_size"						"3.0"
-	"bolt_hitsize_growfinal_size"					"3.0"
-
 	Mods
 	{
 		iron_sights {}
@@ -64,33 +40,33 @@ WeaponData
 			"raise_from_sprint_time" "0.01"
 		}
 		base_lowttk
-		{
-			"spread_stand_hip"				"++1"
-			"spread_stand_hip_run"			"++1"
-			"spread_crouch_hip"   			"++1"
-			"spread_air_hip"  				"++3"
-			
-			// save the kv
-			//"spread_stand_hip_sprint"     "++1"
-			//"spread_wallrunning"  		"0"
-			//"spread_wallhanging"  		"0"
+		{}
+		less_cancer_lstar{
+			"spread_stand_hip"								"0"
+			"spread_stand_hip_run"							"0"
+			"spread_stand_hip_sprint"                       "0"
+			"spread_crouch_hip"   							"0"
 
-			"spread_stand_ads"				"++1"
-			"spread_crouch_ads"   			"++1"
-			"spread_air_ads"  				"++1"
-			
-			"viewkick_scale_min_hipfire"		"++1"
-			"viewkick_scale_max_hipfire"		"++1"
-			"viewkick_scale_min_ads"			"++0.75"
-			"viewkick_scale_max_ads"			"++0.75"
-			
-			"cooldown_viewkick_softScale"		"++0.2"
-			"cooldown_viewkick_hardScale"		"++0.2"
+			"spread_stand_ads"								"0"
+			"spread_crouch_ads"   							"0"
+			"spread_air_ads"  								"0"
 
-		
-			"bolt_hitsize_grow1_size"						"++4.0"
-			"bolt_hitsize_grow2_size"						"++4.0"
-			"bolt_hitsize_growfinal_size"					"++4.0"
+			"spread_wallrunning"  							"0"
+			"spread_wallhanging"  							"0"
+
+			"viewkick_scale_min_hipfire"		"0"
+			"viewkick_scale_max_hipfire"		"0"
+			"viewkick_scale_min_ads"			"0"
+			"viewkick_scale_max_ads"			"0"
+
+			"cooldown_viewkick_softScale"		"0"
+			"cooldown_viewkick_hardScale"		"0"
+
+	
+			"bolt_hitsize_grow1_size"						"1.0"
+			"bolt_hitsize_grow2_size"						"3.0"
+			"bolt_hitsize_growfinal_size"					"3.0"
+
 		}
 	}
 }

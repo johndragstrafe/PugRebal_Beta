@@ -1,9 +1,24 @@
 WeaponData
 {
-	"burst_fire_delay"	"0.55" // .7 -> .55
 
 	MP_BASE
+	{}
+	Mods
 	{
-		"ammo_no_remove_from_stockpile"		"1" // infinite ammo
+		extended_ammo {}
+		pro_screen {}
+		pas_fast_reload {}
+		burn_mod_mgl {}
+		ar_trajectory {}
+		pas_fast_ads {}
+		pas_fast_swap {}
+		tactical_cdr_on_kill {}
+		pas_run_and_gun {}
+		at_unlimited_ammo {}
+		base_atrebal{
+			"burst_fire_delay"	"0.55" // .7 -> .55
+			"ammo_no_remove_from_stockpile"		"1" // infinite ammo
+		}
+
 	}
 }

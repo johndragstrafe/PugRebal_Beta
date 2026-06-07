@@ -1,9 +1,29 @@
 WeaponData
 {
 	MP_BASE
+	{}
+
+	Mods
 	{
-		"ammo_no_remove_from_stockpile"		"1" // infinite ammo
-		"smart_ammo_targeting_time_min"		"0.85" // 1.05 -> 0.85
-		"smart_ammo_targeting_time_min"		"1.25" // 1.55 -> 1.25
+		extended_ammo {}
+		pro_screen {}
+		pas_fast_reload {}
+		fast_lock {}
+		burn_mod_rocket_launcher {}
+		pas_fast_ads {}
+		pas_fast_swap {}
+		tactical_cdr_on_kill {}
+		pas_run_and_gun {}
+		sp_s2s_settings {}
+		fd_mortar_mode {}
+		at_unlimited_ammo
+        {
+            "ammo_no_remove_from_stockpile"					"1"
+        }
+		base_atrebal{
+			"ammo_no_remove_from_stockpile"		"1" // infinite ammo
+			"smart_ammo_targeting_time_min"		"0.85" // 1.05 -> 0.85
+			"smart_ammo_targeting_time_min"		"1.25" // 1.55 -> 1.25
+		}
 	}
 }

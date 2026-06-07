@@ -5,26 +5,27 @@ global function PugRebalance_Get_Stalemate_Time
 
 struct
 {
-	float stalemate_timer = -1
+	float stalemate_timer = 45.0
 } file
 
 void function PugRebalance_StalematesGamemode()
 {
-	printt( "wqoidmwqoidnwqoinfwqoifnwq" )
 	AddCallback_OnCustomGamemodesInit( AddFunc )
 	AddCallback_OnRegisteringCustomNetworkVars( RegisterNetVars )
 }
 void function AddFunc()
 {
-	array<string> gamemodes = [ CAPTURE_THE_FLAG ]
+	array<string> gamemodes = [ CAPTURE_THE_FLAG, GAMEMODE_CTF_COMP ]
 	foreach ( string gamemode in gamemodes )
 	{
-		GameMode_AddSharedInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_sh )
+		GameMode_AddSharedInit( gamemode, PugRebalance_StalematesInit_sh )
 		#if CLIENT
-			GameMode_AddClientInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_cl )
+			printt( "Adding Stalemates Client Init for " + gamemode )
+			GameMode_AddClientInit( gamemode, PugRebalance_StalematesInit_cl )
 		#endif
 		#if SERVER
-			GameMode_AddServerInit( CAPTURE_THE_FLAG, PugRebalance_StalematesInit_sv )
+			printt( "Adding Stalemates Server Init for " + gamemode )
+			GameMode_AddServerInit( gamemode, PugRebalance_StalematesInit_sv )
 		#endif
 	}
 }
@@ -42,9 +43,5 @@ void function PugRebalance_StalematesInit_sh()
 
 float function PugRebalance_Get_Stalemate_Time()
 {
-	if ( file.stalemate_timer < 0 )
-	{
-		file.stalemate_timer = GetCurrentPlaylistVarFloat( "ctf_stalemate_time", 75.0 )
-	}
 	return file.stalemate_timer
 }

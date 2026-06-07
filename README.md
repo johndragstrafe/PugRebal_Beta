@@ -201,6 +201,12 @@ All changes are listed in this format: default (vanilla) value -> changed value
   * Damage vs Titans: 115 -> 150
   * Projectile speed: 3300 -> 3600
 
+### Shotguns
+
+* Mastiff
+
+  * 
+
 ### Anti-Titan Weapons
 
 * Charge Rifle
@@ -212,7 +218,7 @@ All changes are listed in this format: default (vanilla) value -> changed value
 * Frag Grenades
 
   * Explosion damage: 200 -> 20
-  * Impulse force: 500 -> 17500
+  * Impulse force: 500 -> 8000
   * Explosion impulse: 50000 -> 65000
   * Grenades now explode when within proximity of enemies
 * Gravity Star

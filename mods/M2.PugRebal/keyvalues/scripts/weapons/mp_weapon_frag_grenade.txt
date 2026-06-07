@@ -13,9 +13,7 @@ WeaponData
 	"explosion_shake_amplitude"						"0"
 	"explosion_shake_frequency"						"0"
 	"explosion_shake_duration"						"0"
-	"grenade_fuse_time"							"4.25"
-	"max_cook_time"								"4.25"
-
+	
 	"instant_swap_to" 		"1"
 	"toss_time"				".15"
 	"toss_overhead_time"	".15"

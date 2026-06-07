@@ -16,14 +16,11 @@ WeaponData
 		pas_run_and_gun {}
 		sp_s2s_settings {}
 		fd_mortar_mode {}
-		at_unlimited_ammo
-        {
-            "ammo_no_remove_from_stockpile"					"1"
-        }
+		at_unlimited_ammo{}
 		base_atrebal{
 			"ammo_no_remove_from_stockpile"		"1" // infinite ammo
-			"smart_ammo_targeting_time_min"		"0.85" // 1.05 -> 0.85
-			"smart_ammo_targeting_time_min"		"1.25" // 1.55 -> 1.25
+			//"smart_ammo_targeting_time_min"		"0.85" // 1.05 -> 0.85
+			//"smart_ammo_targeting_time_min"		"1.25" // 1.55 -> 1.25
 		}
 	}
 }

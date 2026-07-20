@@ -182,7 +182,7 @@ int function Grenade_OnWeaponToss_( entity weapon, WeaponPrimaryAttackParams att
 	PlayerUsedOffhand( weaponOwner, weapon ) // intentionally here and in Hack_DropGrenadeOnDeath - accurate for when cooldown actually begins
 
 #if SERVER
-	if( weapon.GetWeaponClassName() == "mp_weapon_frag_grenade" )
+	if(  IsValid( grenade ) && weapon.GetWeaponClassName() == "mp_weapon_frag_grenade" )
 		thread GrenadeProximityCheck( grenade, weaponOwner, weapon.GetWeaponSettingFloat( eWeaponVar.explosionradius ) )
 	#if BATTLECHATTER_ENABLED
 		TryPlayWeaponBattleChatterLine( weaponOwner, weapon )

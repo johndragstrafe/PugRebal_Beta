@@ -1,10 +1,33 @@
 WeaponData
 {
+	"spread_stand_hip"								"0"
+	"spread_stand_hip_run"							"0"
+	"spread_stand_hip_sprint"                       "0"
+	"spread_crouch_hip"   							"0"
+
 	MP_BASE
 	{
 		"damage_near_value"   							"30"
 		"damage_far_value"								"20"
 		"spread_air_hip"  								"0"
+		
+		"spread_stand_ads"								"0"
+		"spread_crouch_ads"   							"0"
+		"spread_air_ads"  								"0"
+		"spread_wallrunning"  							"0"
+		"spread_wallhanging"  							"0"
+
+		"viewkick_scale_min_hipfire"		"0"
+		"viewkick_scale_max_hipfire"		"0"
+		"viewkick_scale_min_ads"			"0"
+		"viewkick_scale_max_ads"			"0"
+
+		"cooldown_viewkick_softScale"		"0"
+		"cooldown_viewkick_hardScale"		"0"
+
+		"bolt_hitsize_grow1_size"						"1.0"
+		"bolt_hitsize_grow2_size"						"3.0"
+		"bolt_hitsize_growfinal_size"					"3.0"
 	}
 	
 	Mods
@@ -28,7 +51,6 @@ WeaponData
 		pas_run_and_gun {}
 		old_kick {}
 		reloadanimtest{}
-		
 		gunrunner_animation
 		{
 			"activitymodifier"	"pistol" // use alternator/pistol animation
@@ -38,35 +60,6 @@ WeaponData
 		gunrunner_sprintout
 		{
 			"raise_from_sprint_time" "0.01"
-		}
-		base_lowttk
-		{}
-		less_cancer_lstar{
-			"spread_stand_hip"								"0"
-			"spread_stand_hip_run"							"0"
-			"spread_stand_hip_sprint"                       "0"
-			"spread_crouch_hip"   							"0"
-
-			"spread_stand_ads"								"0"
-			"spread_crouch_ads"   							"0"
-			"spread_air_ads"  								"0"
-
-			"spread_wallrunning"  							"0"
-			"spread_wallhanging"  							"0"
-
-			"viewkick_scale_min_hipfire"		"0"
-			"viewkick_scale_max_hipfire"		"0"
-			"viewkick_scale_min_ads"			"0"
-			"viewkick_scale_max_ads"			"0"
-
-			"cooldown_viewkick_softScale"		"0"
-			"cooldown_viewkick_hardScale"		"0"
-
-	
-			"bolt_hitsize_grow1_size"						"1.0"
-			"bolt_hitsize_grow2_size"						"3.0"
-			"bolt_hitsize_growfinal_size"					"3.0"
-
 		}
 	}
 }

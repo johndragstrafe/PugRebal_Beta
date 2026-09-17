@@ -12,10 +12,11 @@ void function OverridePUGPilotLoadout( entity player, PilotLoadoutDef loadout )
 	give_semi_alternator(player)
 	mastiff_pellets(player)
 	gunrunner_mods(player)
-	//frag_toggle(player) //no kv changed needed - got it all working in _grenade.nut
+	//frag_toggle(player) //no kv changes needed - got it all working in _grenade.nut
 	AT_rebal_toggle(player)
 	//discordlogsendmessage("iwanttodie")
-	toggle_Lstar_cancer(player)
+	//toggle_Lstar_cancer(player) // depricated
+	toggle_lg_volt(player)
 
 }
 void function give_phasetp( entity player ) {
@@ -36,9 +37,9 @@ void function give_semi_alternator( entity player ) {
     array<entity> weapons = player.GetMainWeapons()
     foreach (entity weapon in weapons) {
         if (weapon.GetWeaponClassName() == "mp_weapon_alternator_smg") {
-			if (weapon.HasMod("base_lowttk")) {
+			/*if (weapon.HasMod("base_lowttk")) {
 				weapon.RemoveMod("base_lowttk") // game kills itself if u use both
-			}
+			}*/
             tryaddmod_hahahaahahhaahahaha(weapon, "strafe_semi_alternator")
 			weapon.SetWeaponPrimaryClipCount(weapon.GetWeaponPrimaryClipCountMax())
         }
@@ -51,14 +52,17 @@ void function low_ttk_mods( entity player ) {
 	array<entity> weapons = player.GetMainWeapons()
     foreach (entity weapon in weapons) {
 		string name = weapon.GetWeaponClassName()
+		if (name == "mp_weapon_alternator_smg"){
+			return
+		}
 		array<string> appliedmods = weapon.GetMods()
 		array<string> availableMods = GetWeaponMods_Global(name)
 
 		foreach (string mod in appliedmods) {
 			string mod_lowttk = mod+"_lowttk"
-			if (mod == "strafe_semi_alternator") {
+			/*if (mod == "strafe_semi_alternator") {
 				weapon.RemoveMod(mod) // game kills itself if u use both
-			}
+			}*/
 			if (availableMods.contains(mod_lowttk)) {
 				weapon.RemoveMod(mod)
 				tryaddmod_hahahaahahhaahahaha(weapon, mod_lowttk)
@@ -101,7 +105,7 @@ void function AT_rebal_toggle(entity player){
 }
 
 
-void function toggle_Lstar_cancer(entity player){
+/*void function toggle_Lstar_cancer(entity player){
 	array<entity> Ltest = player.GetMainWeapons()
 	if(GetCurrentPlaylistVarInt("riff_LstarUncancer", 1) != 1){
 		return
@@ -111,6 +115,22 @@ void function toggle_Lstar_cancer(entity player){
 			tryaddmod_hahahaahahhaahahaha(Lstar, "less_cancer_lstar")
 		}
 	}
+}*/
+
+void function toggle_lg_volt(entity player){
+	array<entity> isitlg = player.GetMainWeapons()
+	if(GetCurrentPlaylistVarInt("riff_lgvolt", 0) != 1){
+		return
+	}
+	printt("i hate you")
+	foreach(lg in isitlg){
+		printt("what")
+		if(lg.GetWeaponClassName() == "mp_weapon_hemlok_smg"){
+			print("the fuck")
+			tryaddmod_hahahaahahhaahahaha(lg, "volt_lg")
+		}
+	}
+
 }
 	
 
@@ -156,10 +176,10 @@ void function gunrunner_mods( entity player ) {
 void function tryaddmod_hahahaahahhaahahaha(entity weapon, string mod) {
 	
 		try {
-			//printt("DEBUG|| try " + mod)
+			printt("DEBUG|| try " + mod)
 			weapon.AddMod( mod )
 		}
 		catch(ex) {
-			//printt("DEBUG|| caught ex on " + mod + " : " + ex)
+			printt("DEBUG|| caught ex on " + mod + " : " + ex)
 		}
 }

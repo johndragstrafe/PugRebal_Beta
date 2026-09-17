@@ -10,6 +10,17 @@ global function AbilityShifter_ApplyInProgressStimIfNeeded
 const SHIFTER_WARMUP_TIME = 0.0
 const SHIFTER_WARMUP_TIME_FAST = 0.0
 
+const float PHASE_TP_MAX_RANGE			= 840.0
+const float PHASE_TP_STEP_HEIGHT		= 18.0
+const int   PHASE_TP_STEP_RETRY_MAX		= 6
+const int   PHASE_TP_FIT_BACKOFF_MAX	= 8
+const float PHASE_TP_FIT_BACKOFF_STEP	= 16.0
+const float PHASE_TP_SNAP_TOLERANCE		= 8.0
+const float PHASE_TP_FIZZLE_FRACTION	= 0.05
+const float PHASE_TP_FIZZLE_COST_FRAC	= 0.1
+const float PHASE_TP_EMBARK_RANGE		= 840.0
+const float PHASE_TP_CONE_ANGLE			= 5.0
+
 const string PHASEEXIT_IMPACT_TABLE_PROJECTILE	= "default"
 const string PHASEEXIT_IMPACT_TABLE_TRACE		= "superSpectre_groundSlam_impact"
 
@@ -124,13 +135,31 @@ var function OnWeaponPrimaryAttack_phase_teleport( entity weapon, WeaponPrimaryA
 	// if this duration is too low the vfx is cancer and blinds you
 	//float phase_time = weapon.GetWeaponSettingFloat( eWeaponVar.fire_duration )
 	float phase_time = 1.0
+
+	#if SERVER
+	entity target = PhaseTeleport_FindTarget( weaponOwner )
+	vector destination = IsValid( target ) ? target.GetOrigin() : PhaseTeleport_ComputeDestination( weaponOwner )
+
+	if ( !IsValid( target ) && Distance( weaponOwner.GetOrigin(), destination ) < PHASE_TP_MAX_RANGE * PHASE_TP_FIZZLE_FRACTION )
+	{
+		// TODO: needs its own fx, this is just the normal appear fx in place
+		PlayFX( $"P_phase_shift_main", weaponOwner.GetOrigin() )
+		PlayerUsedOffhand( weaponOwner, weapon )
+
+		int fizzleCost = int( weapon.GetWeaponSettingInt( eWeaponVar.ammo_min_to_fire ) * PHASE_TP_FIZZLE_COST_FRAC )
+		if ( fizzleCost < 1 )
+			fizzleCost = 1
+		return fizzleCost
+	}
+	#endif
+
 	int phaseResult = PhaseShift( weaponOwner, warmupTime, phase_time )
 	#if SERVER
 	if (!phaseResult)
 	{
 		return 0
 	}
-	thread AbilityShifter_DisplaceTeleport( weaponOwner )
+	thread AbilityShifter_DisplaceTeleport( weaponOwner, destination, target )
 	#endif
 	PlayerUsedOffhand( weaponOwner, weapon )
 	#if BATTLECHATTER_ENABLED && SERVER
@@ -184,15 +213,11 @@ void function DoPhaseExitExplosion( entity player, entity phaseWeapon )
 #endif //
 }
 
-void function AbilityShifter_DisplaceTeleport( entity player )
+#if SERVER
+entity function PhaseTeleport_FindTarget( entity player )
 {
-	#if SERVER
-	wait 0.1
-    vector startpos = player.GetOrigin()
-	entity telefragEntity
-	vector endpos = startpos
-	array<VisibleEntityInCone> results = FindVisibleEntitiesInCone( player.EyePosition(), player.GetViewVector(), 640, 5, [player], TRACE_MASK_PLAYERSOLID, VIS_CONE_ENTS_TEST_HITBOXES, player )
-	foreach( result in results )
+	array<VisibleEntityInCone> embarkResults = FindVisibleEntitiesInCone( player.EyePosition(), player.GetViewVector(), PHASE_TP_EMBARK_RANGE, PHASE_TP_CONE_ANGLE, [player], TRACE_MASK_PLAYERSOLID, VIS_CONE_ENTS_TEST_HITBOXES, player )
+	foreach( result in embarkResults )
 	{
 		entity visibleEnt = result.ent
 
@@ -201,60 +226,132 @@ void function AbilityShifter_DisplaceTeleport( entity player )
 
 		if ( visibleEnt.IsPhaseShifted() )
 			continue
-		
+
 		if( visibleEnt.IsTitan() && visibleEnt.GetBossPlayer() == player && !visibleEnt.GetTitanSoul().IsEjecting() )
+			return visibleEnt
+	}
+
+	return null   // own titan only, no telefrag targets - the cone is too easy for a one shot
+}
+
+vector function PhaseTeleport_ComputeDestination( entity player )
+{
+	vector mins = player.GetPlayerMins()
+	vector maxs = player.GetPlayerMaxs()
+	vector origin = player.GetOrigin()
+
+	vector sweepMaxs = maxs
+	float eyeHeight = player.EyePosition().z - origin.z   // hull stands ~18 taller than your eyeline
+	if ( eyeHeight < sweepMaxs.z )
+		sweepMaxs.z = eyeHeight   // sweep tops out at eye level: if you can see it you can go there
+	if ( sweepMaxs.z < mins.z + 1.0 )
+		sweepMaxs.z = mins.z + 1.0
+
+	float lift = 0.0
+	TraceResults up = TraceHull( origin, origin + < 0.0, 0.0, PHASE_TP_STEP_HEIGHT >, mins, sweepMaxs, [player], TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_PLAYER )
+	if ( !up.startSolid )
+		lift = PHASE_TP_STEP_HEIGHT * up.fraction
+
+	float totalLift = lift
+	vector pos = origin + < 0.0, 0.0, lift >
+	vector forward = AnglesToForward( player.EyeAngles() )
+	float remaining = PHASE_TP_MAX_RANGE
+
+	bool steppedUp = false
+	vector preStepPos = pos
+	float preStepLift = totalLift
+
+	for( int i = 0; i < PHASE_TP_STEP_RETRY_MAX; i++ )
+	{
+		TraceResults result = TraceHull( pos, pos + forward * remaining, mins, sweepMaxs, [player], TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_PLAYER )
+		if ( result.startSolid )
 		{
-			telefragEntity = visibleEnt
+			if ( steppedUp )
+			{
+				pos = preStepPos
+				totalLift = preStepLift
+			}
 			break
 		}
 
-		if ( visibleEnt.GetTeam() == player.GetTeam() )
-			continue
+		pos = result.endPos
+		remaining -= remaining * result.fraction
 
-		if ( IsTurret( visibleEnt ) )
-			continue
-			
-		if( !IsHumanSized( visibleEnt ) )
-			continue
-
-		telefragEntity = visibleEnt
-		break
-	}
-	
-	if( IsValid( telefragEntity ) )
-	{
-		player.SetOrigin( telefragEntity.GetOrigin() )
-		if( telefragEntity.IsTitan() && telefragEntity.GetBossPlayer() == player && CanEmbark( player ) )
+		if ( steppedUp )   // a step only counts if it landed on something, else you vault barriers
 		{
-			PilotBecomesTitan( player, telefragEntity )
-			player.SetAngles( telefragEntity.GetAngles() )
-			if ( IsValid( telefragEntity ) )
-				telefragEntity.Destroy()
+			TraceResults ground = TraceHull( pos, pos - < 0.0, 0.0, PHASE_TP_STEP_HEIGHT + PHASE_TP_SNAP_TOLERANCE >, mins, sweepMaxs, [player], TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_PLAYER )
+			if ( ground.fraction >= 1.0 )
+				break   // stepped out over an edge, let them fly
+
+			pos = ground.endPos
+			totalLift = preStepLift
+			steppedUp = false
+
+			if ( Distance( pos, preStepPos ) < 1.0 )
+				break   // stepped up and got nowhere
+		}
+
+		if ( result.fraction >= 1.0 || remaining <= 1.0 )
+			break
+
+		TraceResults stepUp = TraceHull( pos, pos + < 0.0, 0.0, PHASE_TP_STEP_HEIGHT >, mins, sweepMaxs, [player], TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_PLAYER )
+		if ( stepUp.startSolid || stepUp.fraction < 1.0 )
+			break
+
+		preStepPos = pos
+		preStepLift = totalLift
+		pos = stepUp.endPos
+		totalLift += PHASE_TP_STEP_HEIGHT
+		steppedUp = true
+	}
+
+	// you can sweep through gaps you can't stand in; back up to the last spot that fits
+	for( int i = 0; i < PHASE_TP_FIT_BACKOFF_MAX; i++ )
+	{
+		TraceResults fit = TraceHull( pos, pos + < 0.0, 0.0, 1.0 >, mins, maxs, [player], TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_PLAYER )
+		if ( !fit.startSolid )
+			break
+
+		pos -= forward * PHASE_TP_FIT_BACKOFF_STEP
+	}
+
+	TraceResults down = TraceHull( pos, pos - < 0.0, 0.0, totalLift + PHASE_TP_SNAP_TOLERANCE >, mins, maxs, [player], TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_PLAYER )
+	if ( !down.startSolid && down.fraction < 1.0 )
+		pos = down.endPos
+
+	return pos
+}
+#endif
+
+void function AbilityShifter_DisplaceTeleport( entity player, vector destination, entity target )
+{
+	#if SERVER
+	vector startpos = player.GetOrigin()
+
+	wait 0.1
+
+	if ( !IsValid( player ) )
+		return
+
+	vector endpos = startpos
+
+	if( IsValid( target ) )
+	{
+		player.SetOrigin( target.GetOrigin() )
+		if( target.IsTitan() && target.GetBossPlayer() == player && CanEmbark( player ) )
+		{
+			PilotBecomesTitan( player, target )
+			player.SetAngles( target.GetAngles() )
+			if ( IsValid( target ) )
+				target.Destroy()
 		}
 		endpos = player.GetOrigin()
 	}
 	else
 	{
-		vector origin = player.GetOrigin()
-		origin.z += 1
-		vector angles = player.EyeAngles()
-		vector forward = AnglesToForward( angles )
-		vector oldresult = origin
-		TraceResults result
-		result = TraceHull( origin, origin + forward * 40, player.GetPlayerMins(), player.GetPlayerMaxs(), [player], TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_PLAYER )
-		if ( !result.startSolid )
-		{
-			for( int i = 0; i < 20; i++ )
-			{
-				oldresult = result.endPos
-				result = TraceHull( oldresult, oldresult + forward * 40, player.GetPlayerMins() * 1.1, player.GetPlayerMaxs() * 1.1, [player], TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_PLAYER )
-				if ( result.startSolid )
-					break
-			}
-		}
-		player.SetOrigin( oldresult )
+		player.SetOrigin( destination )
 		PutPhasePlayerInSafeSpot( player, 1 )
-        endpos = player.GetOrigin()
+		endpos = player.GetOrigin()
 	}
 	PlayFX( $"P_phase_shift_main", endpos )
     vector translation = endpos-startpos;

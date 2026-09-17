@@ -22,6 +22,8 @@ global function Grenade_OnWeaponTossPrep
 global function Grenade_OnProjectileIgnite
 
 #if SERVER
+	global function CookedImpulseNades
+	global function RyuFragLogic
 	global function Grenade_OnPlayerNPCTossGrenade_Common
 	global function ProxMine_Triggered
 	global function EnableTrapWarningSound
@@ -174,6 +176,7 @@ int function Grenade_OnWeaponToss_( entity weapon, WeaponPrimaryAttackParams att
 		projectilePredicted = false
 		projectileLagCompensated = false
 	}
+	
 #endif
 	entity grenade = Grenade_Launch( weapon, attackParams.pos, (attackParams.dir * directionScale), projectilePredicted, projectileLagCompensated )
 	entity weaponOwner = weapon.GetWeaponOwner()
@@ -182,8 +185,8 @@ int function Grenade_OnWeaponToss_( entity weapon, WeaponPrimaryAttackParams att
 	PlayerUsedOffhand( weaponOwner, weapon ) // intentionally here and in Hack_DropGrenadeOnDeath - accurate for when cooldown actually begins
 
 #if SERVER
-	if(  IsValid( grenade ) && weapon.GetWeaponClassName() == "mp_weapon_frag_grenade" )
-		thread GrenadeProximityCheck( grenade, weaponOwner, weapon.GetWeaponSettingFloat( eWeaponVar.explosionradius ) )
+	if( (weapon.GetWeaponClassName() == "mp_weapon_frag_grenade" ) && GetCurrentPlaylistVarInt("riff_fragtoggle", 1) == 0)
+		thread GrenadeProximityCheck( grenade, weaponOwner, weapon.GetWeaponSettingFloat( eWeaponVar.explosionradius ))
 	#if BATTLECHATTER_ENABLED
 		TryPlayWeaponBattleChatterLine( weaponOwner, weapon )
 	#endif
@@ -260,6 +263,15 @@ entity function Grenade_Launch( entity weapon, vector attackPos, vector throwVel
 	}
 
 	Grenade_OnPlayerNPCTossGrenade_Common( weapon, frag )
+
+	#if SERVER
+	if((weapon.GetWeaponClassName() == "mp_weapon_frag_grenade") && GetCurrentPlaylistVarInt("riff_fragtoggle", 1) == 1){
+		float fragPullTime = weapon.w.startChargeTime
+		//printt("pull time: ")
+		//printt(fragPullTime)
+		thread CookedImpulseNades(frag, weaponOwner, fragPullTime, baseFuseTime)
+	}
+	#endif 
 
 	return frag
 }
@@ -377,6 +389,7 @@ void function HACK_DropGrenadeOnDeath( entity weapon, entity weaponOwner )
 	if( !IsValid( weaponOwner ) || !IsValid( weapon ) || IsAlive( weaponOwner ) )
 		return
 
+	float fragPullTime = weapon.w.startChargeTime
 	float elapsedTime = Time() - weapon.w.startChargeTime
 	float baseFuseTime = weapon.GetGrenadeFuseTime()
 	float fuseDelta = (baseFuseTime - elapsedTime)
@@ -397,7 +410,9 @@ void function HACK_DropGrenadeOnDeath( entity weapon, entity weaponOwner )
 
 		entity grenade = Grenade_Launch( weapon, weaponOwner.GetOrigin(), velocity, PROJECTILE_NOT_PREDICTED, PROJECTILE_NOT_LAG_COMPENSATED )
 		#if SERVER
-		GrenadeProximityCheck(grenade,weaponOwner, weapon.GetWeaponSettingFloat( eWeaponVar.explosionradius ) )
+		if((weapon.GetWeaponClassName() == "mp_weapon_frag_grenade") && GetCurrentPlaylistVarInt("riff_fragtoggle", 1) == 0){
+			GrenadeProximityCheck(grenade, weaponOwner, weapon.GetWeaponSettingFloat( eWeaponVar.explosionradius ) )
+		}
 		#endif
 	}
 }
@@ -470,8 +485,74 @@ void function ClientDestroyCallback_GrenadeDestroyed( entity grenade )
 #endif // CLIENT
 
 #if SERVER
-void function GrenadeProximityCheck( entity grenade, entity weaponOwner, float radiusCheck = 100 )
+void function CookedImpulseNades(entity grenade, entity weaponOwner, float fragPullTime, float fuseTime){
+	if ( !IsValid( grenade ) || !IsValid( weaponOwner ) ){
+		return
+	}
+	float fuseDelta = Time() - fragPullTime
+	fuseTime -= 0.1
+	while(fuseDelta < fuseTime){
+		WaitFrame()
+		fuseDelta = Time() - fragPullTime
+	}
+	float radiusCheck = 220
+	float scaleFactor = 15
+	float zOverride = 7
+	RyuFragLogic(grenade, weaponOwner, radiusCheck, scaleFactor, zOverride)
+}
+
+void function RyuFragLogic(entity grenade, entity weaponOwner, float innerRadiusCheck, float scaleFactor, float zOverride){
+	if ( !IsValid( grenade ) || !IsValid( weaponOwner ) ){
+		return
+	}
+	int teamNum = weaponOwner.GetTeam()
+	while( IsValid( grenade ) && IsValid( weaponOwner ) ){
+		array<entity> nearbyEnemies = GetNPCArrayEx( "any", TEAM_ANY, teamNum, grenade.GetOrigin(), innerRadiusCheck )		
+		nearbyEnemies.extend( GetPlayerArrayEx( "any", TEAM_ANY, teamNum, grenade.GetOrigin(), innerRadiusCheck ) )	
+		foreach( ent in nearbyEnemies ){
+			if ( ShouldSetOffProximityMine( grenade, ent ) && ent.GetTeam() != teamNum /*&& IsAlive( weaponOwner )*/){
+				// lexi was here
+				foreach (entity enemy in nearbyEnemies){
+					bool wallrunning = enemy.IsPlayer() && enemy.IsWallRunning()   // player-only call, npcs throw
+					if ( enemy.IsOnGround() && !enemy.IsTitan() && !wallrunning ){
+
+						//printt("is this one getting called?")
+
+						//scaleFactor scales the xy impulse the enemy receives (smaller is more) *note: if zOverride decreases the xy velocity will increase at the same value
+						//zOverride scales the upwards impulse the enemy recieves (larger is more)
+								
+						//working implementation
+						vector originalXY = grenade.GetOrigin() - enemy.GetWorldSpaceCenter()
+						originalXY.z = 0
+						originalXY = Normalize(originalXY)
+						vector actualSplode = originalXY*scaleFactor
+						actualSplode.z = -(zOverride)
+						//printt(actualSplode)
+						actualSplode += enemy.GetWorldSpaceCenter()
+
+						grenade.SetOrigin(actualSplode)
+					}else if( (!enemy.IsOnGround() && !enemy.IsTitan()) || (!enemy.IsTitan() && wallrunning) ){
+						scaleFactor = 50 //scales impulse the enemy receives (lower is more)
+						vector betternormalised = Normalize( grenade.GetOrigin() - enemy.GetWorldSpaceCenter() )
+						vector grenSplodePoint = enemy.GetWorldSpaceCenter() + betternormalised*scaleFactor
+						//printt("I was naded in the air!")
+						grenade.SetOrigin(grenSplodePoint)
+					}
+				}
+				grenade.GrenadeExplode( < 0, 0, 1 > )
+				return
+			}
+		}
+		WaitFrame()	
+	}
+}
+
+void function GrenadeProximityCheck(entity grenade, entity weaponOwner, float radiusCheck = 100)
 {
+	// folded in from Aoloach.PugRebalFragFix 1.0.0
+	if ( !IsValid( grenade ) || !IsValid( weaponOwner ) )
+		return
+
 	grenade.EndSignal( "OnDestroy" )
 	weaponOwner.EndSignal( "OnDestroy" )
 	OnThreadEnd(
@@ -480,65 +561,14 @@ void function GrenadeProximityCheck( entity grenade, entity weaponOwner, float r
 			// discordlogsendmessage("I stopped tracking cause I'm useless")
 		}
 	)
-	int teamNum = weaponOwner.GetTeam()
-	float innerRadiusCheck = radiusCheck / 1.6
-	while( IsValid( grenade ) && IsValid( weaponOwner ) )
-	{
-		// discordlogsendmessage("I did not stop tracking cause I'm useful")
-		array<entity> nearbyEnemies = GetNPCArrayEx( "any", TEAM_ANY, teamNum, grenade.GetOrigin(), innerRadiusCheck )
-		nearbyEnemies.extend( GetPlayerArrayEx( "any", TEAM_ANY, teamNum, grenade.GetOrigin(), innerRadiusCheck ) )
-		foreach( ent in nearbyEnemies )
-		{
-			if ( ShouldSetOffProximityMine( grenade, ent ) && ent.GetTeam() != teamNum /*&& IsAlive( weaponOwner )*/)
-			{
-				// lexi was here
-				if(GetCurrentPlaylistVarInt("riff_fragtoggle", 0) == 0){
-					foreach (entity enemy in nearbyEnemies){
-						if ( enemy.IsOnGround() && !enemy.IsTitan() && !enemy.IsWallRunning() ){
-
-							int scaleFactor = 10 //scales the xy impulse the enemy receives (smaller is more) *note: if zOverride decreases the xy velocity will increase at the same value
-							float zOverride = 8 //scales the upwards impulse the enemy recieves (larger is more)
-						
-							//working implementation
-							vector originalXY = grenade.GetOrigin() - enemy.GetWorldSpaceCenter()
-							originalXY.z = 0
-							originalXY = Normalize(originalXY)
-							vector actualSplode = originalXY*scaleFactor
-							actualSplode.z = -(zOverride)
-							//printt(actualSplode)
-							actualSplode += enemy.GetWorldSpaceCenter()
-
-							grenade.SetOrigin(actualSplode)
-						}else if( (!enemy.IsOnGround() && !enemy.IsTitan()) || (!enemy.IsTitan() && enemy.IsWallRunning()) ){
-							int scaleFactor = 90 //scales impulse the enemy receives (lower is more)
-							vector betternormalised = Normalize( grenade.GetOrigin() - enemy.GetWorldSpaceCenter() )
-							vector grenSplodePoint = enemy.GetWorldSpaceCenter() + betternormalised*scaleFactor
-
-							grenade.SetOrigin(grenSplodePoint)
-						}
-					}
-				}else{
-					foreach ( entity enemy in nearbyEnemies ){
-						if ( enemy.IsOnGround() &&  !enemy.IsTitan() && !enemy.IsWallRunning() ){
-							int Iweigh50kg = 90
-							int centerDiff = 12
-							vector newpos = <(enemy.GetOrigin().x*Iweigh50kg+grenade.GetOrigin().x*(100-Iweigh50kg))/100, (enemy.GetOrigin().y*Iweigh50kg+grenade.GetOrigin().y*(100-Iweigh50kg))/100, enemy.GetWorldSpaceCenter().z - centerDiff>
-
-							grenade.SetOrigin(newpos)		
-						}else if( (!enemy.IsOnGround() && !enemy.IsTitan()) || (!enemy.IsTitan() && enemy.IsWallRunning()) ){
-							int Iweighless = 90
-							vector newpos = <(enemy.GetOrigin().x*Iweighless+grenade.GetOrigin().x*(100-Iweighless))/100, (enemy.GetOrigin().y*Iweighless+grenade.GetOrigin().y*(100-Iweighless))/100, ((enemy.GetWorldSpaceCenter().z)*Iweighless+grenade.GetOrigin().z*(100-Iweighless))/100>
-					
-							grenade.SetOrigin(newpos)
-						}
-					}
-				}
-				grenade.GrenadeExplode( < 0, 0, 1 > )
-				return
-			}
-		}
-		WaitFrame()
-	}
+	
+	radiusCheck /= 1.6
+	float scaleFactor = 10
+	float zOverride = 8
+	RyuFragLogic(grenade, weaponOwner, radiusCheck, scaleFactor, zOverride)
+				
+	WaitFrame()
+	return
 }
 
 function EnableTrapWarningSound( entity trap, delay = 0, warningSound = DEFAULT_WARNING_SFX )

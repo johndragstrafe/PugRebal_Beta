@@ -1,0 +1,66 @@
+global function PugRebalance_SecondTitan_Init
+global function PugRebalance_GetSecondTitanMeterScale
+
+struct
+{
+	table<string, int> titanDeploys // keyed by uid, remains through disconnect
+	table<string, bool> hadTitan
+	float meterScale = 1.0
+} file
+
+void function PugRebalance_SecondTitan_Init()
+{
+	AddCallback_GameStateEnter( eGameState.Playing, SecondTitan_OnPlaying )
+
+	thread SecondTitan_DeployWatch()
+}
+
+void function SecondTitan_OnPlaying() // halftime reset for multiplier
+{
+	file.titanDeploys.clear()
+	file.hadTitan.clear()
+	file.meterScale = GetCurrentPlaylistVarFloat( "riff_secondtitan_meterscale", 0.6 )
+}
+
+void function SecondTitan_DeployWatch() //probably a better way to handle drops + spawns
+{
+	while ( true )
+	{
+		if ( GamePlayingOrSuddenDeath() )
+		{
+			foreach ( player in GetPlayerArray() )
+			{
+				if ( !IsValid( player ) )
+					continue
+
+				string uid = player.GetUID()
+				bool hasTitan = player.IsTitan() || IsValid( player.GetPetTitan() )
+				bool hadTitan = ( uid in file.hadTitan ) ? file.hadTitan[ uid ] : false
+
+				if ( hasTitan && !hadTitan )
+				{
+					if ( !( uid in file.titanDeploys ) )
+						file.titanDeploys[ uid ] <- 0
+
+					file.titanDeploys[ uid ]++
+				}
+
+				file.hadTitan[ uid ] <- hasTitan
+			}
+		}
+
+		wait 0.5
+	}
+}
+
+float function PugRebalance_GetSecondTitanMeterScale( entity player )
+{
+	if ( !IsValid( player ) || !player.IsPlayer() )
+		return 1.0
+
+	string uid = player.GetUID()
+	if ( uid in file.titanDeploys && file.titanDeploys[ uid ] >= 1 )
+		return file.meterScale
+
+	return 1.0
+}

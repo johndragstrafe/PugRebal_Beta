@@ -3,8 +3,9 @@
 {
 	"global"
 	{
-		grapple_detachSpeedLoss              1500
-		grapple_detachSpeedLossMin              300
+		grapple_detachSpeedLoss              400
+		grapple_airAccel			450
+		//grapple_detachSpeedLossMin              300
 	}
 }
 

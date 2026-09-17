@@ -284,6 +284,8 @@ void function UpdateTitanArmBadge( entity soul )
 		return
 
 	entity armBadge = soul.soul.armBadge
+	if ( !IsValid( armBadge ) )
+		return
 
 	//armBadge.SetModel( model )
 	//armBadge.SetSkin( titan.GetSkin() )
@@ -762,7 +764,7 @@ function TitanEjectPlayer( entity ejectTitan, bool instant = false ) //TODO: Thi
 		)
 
         
-        if (!(GetCurrentPlaylistVarInt("riff_screenshake", 0))) {
+        if (!(GetCurrentPlaylistVarInt("riff_screenshake", 1))) {
 		    entity shake = CreateEntity( "env_shake" )
 		    shake.SetOrigin( titanOrigin )
 		    shake.kv.amplitude = 12  //1-16

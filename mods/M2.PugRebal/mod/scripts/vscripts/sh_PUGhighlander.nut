@@ -3,12 +3,12 @@ global function PugRebalance_Highlander_Init
 // TODO: sfx, ui, clean up weapon names, show msg on titan loadout swap
 
 void function PugRebalance_Highlander_Init() {
-    if (GetCurrentPlaylistVarInt("pugs_highlander", 0)) {
+    if (GetCurrentPlaylistVarInt("pugs_highlander", 1)) {
         #if SERVER
             AddCallback_OnPlayerGetsNewPilotLoadout( ValidateLoadout )
         #endif
     }
-    if (IsLobby() || GetCurrentPlaylistVarInt("pugs_highlander", 0)) {
+    if (IsLobby() || GetCurrentPlaylistVarInt("pugs_highlander", 1)) {
         #if SERVER
             AddCallback_OnReceivedSayTextMessage( HighlanderCommand )
         #endif

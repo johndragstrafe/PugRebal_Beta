@@ -66,6 +66,20 @@
 			}
 		},
 		{
+			"Path": "_PUGmeterrestore.gnut",
+			"RunOn": "SERVER && MP",
+			"ServerCallback": {
+				"After": "PugRebalance_MeterRestore_Init"
+			}
+		},
+		{
+			"Path": "_PUGsecondtitan.gnut",
+			"RunOn": "SERVER && MP",
+			"ServerCallback": {
+				"After": "PugRebalance_SecondTitan_Init"
+			}
+		},
+		{
 			"Path": "sh_PUGHighlander.nut",
 			"RunOn": "( CLIENT || SERVER ) && MP",
 			"ServerCallback": {

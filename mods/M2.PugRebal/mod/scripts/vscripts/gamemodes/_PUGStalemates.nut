@@ -72,10 +72,11 @@ void function threaded_StalemateTimer()
 	OnThreadEnd(
 		function() : ()
 		{
-			if ( file.stalemating )
+			// lock this behind gamestate so ResetFlag doesn't hit SetGlobalNetEnt on the destroyed flags during map unload
+			if ( file.stalemating && GamePlayingOrSuddenDeath()
+				&& IsValid( GetFlagForTeam( TEAM_MILITIA ) ) && IsValid( GetFlagForTeam( TEAM_IMC ) ) )
 			{
-				ResetFlag( GetFlagForTeam( TEAM_MILITIA ) )
-				ResetFlag( GetFlagForTeam( TEAM_IMC ) )
+				ResetBothFlags()
 			}
 			EndStalemate()
 		}

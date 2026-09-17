@@ -1,0 +1,98 @@
+untyped
+global function PugRebalance_MeterRestore_Init
+
+struct MR_Saved
+{
+	bool restoreFull = false
+	float ownedFrac = 0.0
+	float earnedFrac = 0.0
+}
+
+struct
+{
+	table<string, MR_Saved> saved = {}
+	bool respawnCallbackRegistered = false  // have to restore at respawn instead of connect
+} file
+
+void function PugRebalance_MeterRestore_Init()
+{
+	AddCallback_OnClientDisconnected( MR_OnClientDisconnected )
+	AddCallback_GameStateEnter( eGameState.Playing, MR_OnPlayingEnter )  // clear old saves at halftime
+}
+
+bool function MR_RiffEnabled()
+{
+	return GetCurrentPlaylistVarInt( "riff_meterrestore", 1 ) == 1
+}
+
+void function MR_OnClientDisconnected( entity player )
+{
+	if ( !MR_RiffEnabled() )
+		return
+
+	string uid = player.GetUID()
+	if ( uid == "" )
+		return // insecure mode
+
+	int gameState = GetGameState()
+	if ( gameState != eGameState.Playing && gameState != eGameState.SuddenDeath )
+		return
+
+	if ( player.IsTitan() || IsValid( player.GetPetTitan() ) || player.s.replacementDropInProgress )
+	{
+		if ( IsTitanAvailable( player ) )
+			ClearTitanAvailable( player )
+		if ( uid in file.saved )
+			delete file.saved[uid]
+		return
+	}
+
+	MR_Saved s
+	if ( IsTitanAvailable( player ) )
+	{
+		s.restoreFull = true
+		ClearTitanAvailable( player )  // restore full meter, don't spawn straight into titan
+	}
+	else
+	{
+		s.ownedFrac = PlayerEarnMeter_GetOwnedFrac( player )
+		s.earnedFrac = PlayerEarnMeter_GetEarnedFrac( player )
+	}
+	file.saved[uid] <- s
+}
+
+void function MR_OnPlayerRespawned( entity player )
+{
+	if ( !MR_RiffEnabled() )
+		return
+
+	string uid = player.GetUID()
+	if ( !( uid in file.saved ) )
+		return
+
+	MR_Saved s = file.saved[uid]
+	delete file.saved[uid]
+
+	float ownedFrac = s.restoreFull ? 1.0 : s.ownedFrac
+	if ( ownedFrac > PlayerEarnMeter_GetOwnedFrac( player ) )
+		PlayerEarnMeter_SetOwnedFrac( player, ownedFrac )
+
+	// replication of PlayerEarnMeter_SetEarnedFrac (not global); must set, add multiplies
+	float earnedFrac = max( s.earnedFrac, PlayerEarnMeter_GetOwnedFrac( player ) )
+	if ( earnedFrac > PlayerEarnMeter_GetEarnedFrac( player ) )
+	{
+		player.p.earnMeterOverdriveFrac = earnedFrac
+		player.SetPlayerNetFloat( EARNMETER_EARNEDFRAC, earnedFrac )
+	}
+}
+
+void function MR_OnPlayingEnter()
+{
+	file.saved.clear()
+
+	if ( !file.respawnCallbackRegistered )
+	{
+		file.respawnCallbackRegistered = true
+		AddCallback_OnPlayerRespawned( MR_OnPlayerRespawned )
+	}
+}

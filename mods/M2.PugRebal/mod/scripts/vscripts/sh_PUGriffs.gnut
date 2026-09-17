@@ -2,41 +2,54 @@ global function Riff_BetaRebalInit
 
 void function Riff_BetaRebalInit()
 {
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+	//QOL changes
+	AddPrivateMatchModeSettingEnum( "QOL Rebalances",
 		"pugs_highlander", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "0" )
-	AddPrivateMatchModeSettingArbitrary( "Beta Rebalances",
+	AddPrivateMatchModeSettingArbitrary( "QOL Rebalances",
 		"riff_aimpunch", "0.0" ) // default 0.0x
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+	AddPrivateMatchModeSettingEnum( "QOL Rebalances",
 		"riff_phasetp", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "1" ) // default on
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+	AddPrivateMatchModeSettingEnum( "QOL Rebalances",
 		"riff_regennerf", [ "#SETTING_DISABLED", "Stim Only", "Always" ], "0" )
-	AddPrivateMatchModeSettingArbitrary( "Beta Rebalances",
+	AddPrivateMatchModeSettingArbitrary( "QOL Rebalances",
 		"riff_thickoutline", "1.5" )
-	AddPrivateMatchModeSettingArbitrary( "Beta Rebalances",
+	AddPrivateMatchModeSettingArbitrary( "QOL Rebalances",
 		"riff_fastmantle", "0.4" ) // default 0.4x
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+	AddPrivateMatchModeSettingEnum( "QOL Rebalances",
 		"riff_headshots", [ "#SETTING_DISABLED", "Air", "<500", ">2000", "Always" ], "0" )
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
-		"riff_screenshake", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "1" ) // default on
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
-		"riff_ttktoggle", [ "High TTK (6.0)", "Low TTK (5.2)" ], "0" )
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
-		"riff_gunrunner", [ "Vanilla", "Banned", "Rework Animation", "Sprintout Time" ], "1" )
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
-		"riff_fragtoggle", [ "Normalized", "Lerped"], "0" )
-	AddPrivateMatchModeSettingArbitrary( "Beta Rebalances",
+	AddPrivateMatchModeSettingEnum( "QOL Rebalances",
+		"riff_screenshake", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "0" ) // default off
+	AddPrivateMatchModeSettingArbitrary( "QOL Rebalances",
 		"ctf_stalemate_time", "75.0" ) // default 75s
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
-		"riff_mastiffpellets", [ "Vanilla", "Doubled" ], "0" )
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
-		"riff_gravsuck", [ "#SETTING_ENABLED", "#SETTING_DISABLED" ], "0" )
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
-		"riff_thunderracist", ["Vanilla", "Freedom"], "1")
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
+	AddPrivateMatchModeSettingEnum( "QOL Rebalances",
+		"riff_randomsides", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "0") // default off
+	AddPrivateMatchModeSettingEnum( "QOL Rebalances",
+		"riff_meterrestore", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "1") // default on
+	AddPrivateMatchModeSettingArbitrary( "QOL Rebalances",
+		"riff_secondtitan_meterscale", "0.6" ) // effective 0.3; default per community vote
+	
+	
+	//weapon balance options
+	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
+		"riff_ttktoggle", [ "High TTK (6.0)", "Low TTK (5.2)" ], "0" )
+	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
+		"riff_gunrunner", [ "Vanilla", "Banned", "Rework Animation", "Sprintout Time" ], "2" )
+	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
+		"riff_fragtoggle", [ "Prox", "Cook"], "1" )
+	AddPrivateMatchModeSettingEnum( "Weapon Rebalances", 
+		"riff_semialternator", ["Vanilla", "Semi-Auto"],"0")
+	AddPrivateMatchModeSettingEnum( "Weapon Rebalances", 
+		"riff_lgvolt", ["Vanilla", "Quake"],"1")
+	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
 		"riff_atrebal", ["Vanilla", "Buffed"], "0")
-	AddPrivateMatchModeSettingEnum( "Beta Rebalances",
-		"riff_LstarUncancer", ["Vanilla", "Rework"], "1")
-		
+	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
+		"riff_thunderracist", ["Vanilla", "Freedom"], "1")
+	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
+		"riff_gravsuck", [ "#SETTING_ENABLED", "#SETTING_DISABLED" ], "0" )
+	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
+		"riff_mastiffpellets", [ "Vanilla", "Doubled" ], "0" )
+
+	//AddPrivateMatchModeSettingEnum( "Beta Rebalances", "riff_LstarUncancer", ["Vanilla", "Rework"], "1")
 	//AddPrivateMatchModeSettingArbitrary( "Beta Rebalances", "riff_leg_damage", "1.0" )
 	#if SERVER
 	AddCallback_GameStateEnter( eGameState.Playing, BetaRebalConvars );

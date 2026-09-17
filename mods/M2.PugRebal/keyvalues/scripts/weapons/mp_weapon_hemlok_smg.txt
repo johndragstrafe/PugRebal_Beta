@@ -52,5 +52,15 @@ WeaponData
 		{
 			"raise_from_sprint_time" 			"0.01"
 		}
+		volt_lg
+		{
+			"viewkick_scale_firstshot_hipfire"		"0"
+			"viewkick_scale_min_hipfire"  			"0"
+			"viewkick_scale_max_hipfire"  			"0"
+			"viewkick_roll_randomMin" 				"0"
+			"viewkick_roll_randomMax" 				"0"
+			"viewkick_roll_softScale" 				"0"
+			"viewkick_roll_hardScale" 				"0"
+		}
 	}
 }

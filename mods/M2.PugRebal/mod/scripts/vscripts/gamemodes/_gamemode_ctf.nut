@@ -29,6 +29,9 @@ struct {
 	array<entity> militiaCaptureAssistList
 
 	array<void functionref( entity )> OnCTFFlagStateChangedCallbacks // pugrebal
+
+	bool randomSidesRolled
+	bool randomSidesSwap
 } file
 
 
@@ -37,6 +40,7 @@ struct {
 /* pugrebal */
 
 global function ResetFlag
+global function ResetBothFlags
 global function AddCallback_OnCTFFlagStateChange
 
 void function AddCallback_OnCTFFlagStateChange( void functionref( entity ) callbackFunc ) {
@@ -139,12 +143,24 @@ void function CreateFlags()
 		file.militiaFlag.Destroy()
 	}
 
+	// first-half pass; it carries through halftime on its own
+	if ( !file.randomSidesRolled )
+	{
+		file.randomSidesRolled = true
+		if ( GetCurrentPlaylistVarInt( "riff_randomsides", 0 ) == 1 )
+			file.randomSidesSwap = RandomInt( 2 ) == 0
+		printt( "[PugRebal] riff_randomsides: starting sides " + ( file.randomSidesSwap ? "SWAPPED from" : "at" ) + " map default" )
+	}
+
 	foreach ( entity spawn in GetEntArrayByClass_Expensive( "info_spawnpoint_flag" ) )
 	{
 		bool switchedSides = HasSwitchedSides() == 1
-		
-		bool shouldSwap = switchedSides 
+
+		bool shouldSwap = switchedSides
 		if ( !shouldSwap && SWAP_FLAG_MAPS.contains( GetMapName() ) )
+			shouldSwap = !shouldSwap
+
+		if ( !switchedSides && file.randomSidesSwap )
 			shouldSwap = !shouldSwap
 
 		int flagTeam = spawn.GetTeam()
@@ -582,6 +598,25 @@ void function ResetFlag( entity flag )
 	flag.Signal( "CTF_ReturnedFlag" )
 }
 
+void function ResetBothFlags()   // end-of-stalemate cap fix; detach both carriers before resetting
+{
+	entity imcFlag = GetFlagForTeam( TEAM_IMC )
+	entity militiaFlag = GetFlagForTeam( TEAM_MILITIA )
+	if ( !IsValid( imcFlag ) || !IsValid( militiaFlag ) )
+		return
+
+	imcFlag.s.canTake = false
+	militiaFlag.s.canTake = false
+
+	if ( imcFlag.GetParent() != null )
+		DropFlag( imcFlag.GetParent(), false )
+	if ( militiaFlag.GetParent() != null )
+		DropFlag( militiaFlag.GetParent(), false )
+
+	ResetFlag( imcFlag )
+	ResetFlag( militiaFlag )
+}
+
 void function FlagProximityTracker( entity flag )
 {
 	flag.EndSignal( "OnDestroy" )
@@ -620,7 +655,7 @@ void function FlagProximityTracker( entity flag )
 					continue
 				
 				playerInsidePerimeter.append( player )
-				thread TryReturnFlag( player, flag )
+				thread TryReturnFlag( player, flag, playerInsidePerimeter )
 			}
 			else
 			{
@@ -636,13 +671,16 @@ void function FlagProximityTracker( entity flag )
 	}
 }
 
-void function TryReturnFlag( entity player, entity flag )
+void function TryReturnFlag( entity player, entity flag, array< entity > playerInsidePerimeter )
 {
 	Remote_CallFunction_NonReplay( player, "ServerCallback_CTF_StartReturnFlagProgressBar", Time() + CTF_GetFlagReturnTime() )
 	EmitSoundOnEntityOnlyToPlayer( player, player, "UI_CTF_1P_FlagReturnMeter" )
-	
-	OnThreadEnd( function() : ( flag, player )
+
+	OnThreadEnd( function() : ( flag, player, playerInsidePerimeter )
 	{
+		// vanilla bugfix: remove a returning player when the return is interrupted for any reason, not just walking out of range
+		playerInsidePerimeter.removebyvalue( player )
+
 		if ( IsValidPlayer( player ) )
 		{
 			Remote_CallFunction_NonReplay( player, "ServerCallback_CTF_StopReturnFlagProgressBar" )

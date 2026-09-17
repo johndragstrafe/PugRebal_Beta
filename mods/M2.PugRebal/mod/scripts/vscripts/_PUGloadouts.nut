@@ -119,7 +119,7 @@ void function AT_rebal_toggle(entity player){
 
 void function toggle_lg_volt(entity player){
 	array<entity> isitlg = player.GetMainWeapons()
-	if(GetCurrentPlaylistVarInt("riff_lgvolt", 0) != 1){
+	if(GetCurrentPlaylistVarInt("riff_lgvolt", 1) != 1){
 		return
 	}
 	printt("i hate you")

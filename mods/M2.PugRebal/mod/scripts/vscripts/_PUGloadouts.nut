@@ -17,6 +17,7 @@ void function OverridePUGPilotLoadout( entity player, PilotLoadoutDef loadout )
 	//discordlogsendmessage("iwanttodie")
 	//toggle_Lstar_cancer(player) // depricated
 	toggle_lg_volt(player)
+	add_beckett_smoke(player)
 
 }
 void function give_phasetp( entity player ) {
@@ -122,15 +123,28 @@ void function toggle_lg_volt(entity player){
 	if(GetCurrentPlaylistVarInt("riff_lgvolt", 1) != 1){
 		return
 	}
-	printt("i hate you")
+	//printt("i hate you")
 	foreach(lg in isitlg){
-		printt("what")
+		//printt("what")
 		if(lg.GetWeaponClassName() == "mp_weapon_hemlok_smg"){
-			print("the fuck")
+			//print("the fuck")
 			tryaddmod_hahahaahahhaahahaha(lg, "volt_lg")
 		}
 	}
 
+}
+
+void function add_beckett_smoke(entity player){
+	if(GetCurrentPlaylistVarInt("riff_beckett_smoke", 1) != 1){
+		return
+	}
+	entity smoke = player.GetOffhandWeapon(OFFHAND_RIGHT)
+	//printt("grass")
+	if(smoke.GetWeaponClassName() == "mp_weapon_grenade_electric_smoke"){
+		//print("killme")
+		tryaddmod_hahahaahahhaahahaha(smoke, "beckett_smoke")
+	}
+	
 }
 	
 
@@ -176,10 +190,10 @@ void function gunrunner_mods( entity player ) {
 void function tryaddmod_hahahaahahhaahahaha(entity weapon, string mod) {
 	
 		try {
-			printt("DEBUG|| try " + mod)
+			//printt("DEBUG|| try " + mod)
 			weapon.AddMod( mod )
 		}
 		catch(ex) {
-			printt("DEBUG|| caught ex on " + mod + " : " + ex)
+			//printt("DEBUG|| caught ex on " + mod + " : " + ex)
 		}
 }

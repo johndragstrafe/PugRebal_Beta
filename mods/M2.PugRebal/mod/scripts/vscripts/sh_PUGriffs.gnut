@@ -41,6 +41,8 @@ void function Riff_BetaRebalInit()
 	AddPrivateMatchModeSettingEnum( "Weapon Rebalances", 
 		"riff_lgvolt", ["Vanilla", "Quake"],"1")
 	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
+		"riff_beckett_smoke", ["Vanilla", "Firestar Toss"], "1")
+	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
 		"riff_atrebal", ["Vanilla", "Buffed"], "0")
 	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
 		"riff_thunderracist", ["Vanilla", "Freedom"], "1")

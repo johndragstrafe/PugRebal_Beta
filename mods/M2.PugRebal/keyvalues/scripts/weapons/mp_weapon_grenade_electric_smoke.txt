@@ -2,4 +2,21 @@ WeaponData
 {
 	"toss_pullout_time"								"0.25"
 	"projectile_launch_speed"						"1200"
+
+	Mods
+	{
+		burn_mod_grenade_electric_smoke{}
+		pas_ordnance_pack{}
+		spree_lvl1_grenade_smoke{}
+		spree_lvl2_grenade_smoke{}
+		spree_lvl3_grenade_smoke{}
+		sp_disable_arc_indicator{}
+		beckett_smoke{
+			"projectile_launch_speed"						"2800"
+			"projectile_launch_pitch_offset"				"0"
+			"projectile_gravity_scale"						"2"
+			"projectile_inherit_owner_velocity_scale"		"1.0"
+		}
+		
+	}
 }

@@ -24,6 +24,7 @@ global function Grenade_OnProjectileIgnite
 #if SERVER
 	global function CookedImpulseNades
 	global function RyuFragLogic
+	global function ExplosionReposition
 	global function Grenade_OnPlayerNPCTossGrenade_Common
 	global function ProxMine_Triggered
 	global function EnableTrapWarningSound
@@ -495,7 +496,7 @@ void function CookedImpulseNades(entity grenade, entity weaponOwner, float fragP
 		WaitFrame()
 		fuseDelta = Time() - fragPullTime
 	}
-	float radiusCheck = 220
+	float radiusCheck = 250
 	float scaleFactor = 15
 	float zOverride = 7
 	RyuFragLogic(grenade, weaponOwner, radiusCheck, scaleFactor, zOverride)
@@ -509,42 +510,60 @@ void function RyuFragLogic(entity grenade, entity weaponOwner, float innerRadius
 	while( IsValid( grenade ) && IsValid( weaponOwner ) ){
 		array<entity> nearbyEnemies = GetNPCArrayEx( "any", TEAM_ANY, teamNum, grenade.GetOrigin(), innerRadiusCheck )		
 		nearbyEnemies.extend( GetPlayerArrayEx( "any", TEAM_ANY, teamNum, grenade.GetOrigin(), innerRadiusCheck ) )	
+		float curMinDist = innerRadiusCheck
+		entity enemy
 		foreach( ent in nearbyEnemies ){
 			if ( ShouldSetOffProximityMine( grenade, ent ) && ent.GetTeam() != teamNum /*&& IsAlive( weaponOwner )*/){
 				// lexi was here
-				foreach (entity enemy in nearbyEnemies){
-					bool wallrunning = enemy.IsPlayer() && enemy.IsWallRunning()   // player-only call, npcs throw
-					if ( enemy.IsOnGround() && !enemy.IsTitan() && !wallrunning ){
-
-						//printt("is this one getting called?")
-
-						//scaleFactor scales the xy impulse the enemy receives (smaller is more) *note: if zOverride decreases the xy velocity will increase at the same value
-						//zOverride scales the upwards impulse the enemy recieves (larger is more)
-								
-						//working implementation
-						vector originalXY = grenade.GetOrigin() - enemy.GetWorldSpaceCenter()
-						originalXY.z = 0
-						originalXY = Normalize(originalXY)
-						vector actualSplode = originalXY*scaleFactor
-						actualSplode.z = -(zOverride)
-						//printt(actualSplode)
-						actualSplode += enemy.GetWorldSpaceCenter()
-
-						grenade.SetOrigin(actualSplode)
-					}else if( (!enemy.IsOnGround() && !enemy.IsTitan()) || (!enemy.IsTitan() && wallrunning) ){
-						scaleFactor = 50 //scales impulse the enemy receives (lower is more)
-						vector betternormalised = Normalize( grenade.GetOrigin() - enemy.GetWorldSpaceCenter() )
-						vector grenSplodePoint = enemy.GetWorldSpaceCenter() + betternormalised*scaleFactor
-						//printt("I was naded in the air!")
-						grenade.SetOrigin(grenSplodePoint)
+				foreach (entity ePlayer in nearbyEnemies){
+					vector enemyDistVec = grenade.GetOrigin() - ePlayer.GetWorldSpaceCenter()
+					float enemyDist = sqrt(enemyDistVec.x*enemyDistVec.x + enemyDistVec.y*enemyDistVec.y + enemyDistVec.y + enemyDistVec.z*enemyDistVec.z)
+					// printt("enemyDistVec: ")
+					// printt(enemyDistVec)
+					// printt("enemyDist: ")
+					// printt(enemyDist)
+					if(enemyDist < curMinDist){
+						curMinDist = enemyDist
+						enemy = ePlayer
 					}
 				}
-				grenade.GrenadeExplode( < 0, 0, 1 > )
-				return
+				ExplosionReposition(grenade, weaponOwner, enemy, scaleFactor, zOverride)
 			}
 		}
 		WaitFrame()	
 	}
+}
+
+void function ExplosionReposition(entity grenade, entity weaponOwner, entity enemy, float scaleFactor, float zOverride){
+	if ( !IsValid( grenade ) || !IsValid( weaponOwner ) ){
+		return
+	}
+	bool wallrunning = enemy.IsPlayer() && enemy.IsWallRunning()   // player-only call, npcs throw
+	if ( enemy.IsOnGround() && !enemy.IsTitan() && !wallrunning ){
+
+		//printt("is this one getting called?")
+
+		//scaleFactor scales the xy impulse the enemy receives (smaller is more) *note: if zOverride decreases the xy velocity will increase at the same value
+		//zOverride scales the upwards impulse the enemy recieves (larger is more)
+				
+		//working implementation
+		vector originalXY = grenade.GetOrigin() - enemy.GetWorldSpaceCenter()
+		originalXY.z = 0
+		originalXY = Normalize(originalXY)
+		vector actualSplode = originalXY*scaleFactor
+		actualSplode.z = -(zOverride)
+		//printt(actualSplode)
+		actualSplode += enemy.GetWorldSpaceCenter()
+
+		grenade.SetOrigin(actualSplode)
+	}else if( (!enemy.IsOnGround() && !enemy.IsTitan()) || (!enemy.IsTitan() && wallrunning) ){
+		scaleFactor = 50 //scales impulse the enemy receives (lower is more)
+		vector betternormalised = Normalize( grenade.GetOrigin() - enemy.GetWorldSpaceCenter() )
+		vector grenSplodePoint = enemy.GetWorldSpaceCenter() + betternormalised*scaleFactor
+		//printt("I was naded in the air!")
+		grenade.SetOrigin(grenSplodePoint)
+	}
+	grenade.GrenadeExplode( < 0, 0, 1 > )
 }
 
 void function GrenadeProximityCheck(entity grenade, entity weaponOwner, float radiusCheck = 100)

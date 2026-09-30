@@ -34,7 +34,6 @@ WeaponData
 		base_lowttk
 		{
 			"damage_near_value"     			"20"
-			"spread_air_hip"				"1.0"
 			"damage_headshot_scale"				"1.5"
 		}
 		gunrunner_animation

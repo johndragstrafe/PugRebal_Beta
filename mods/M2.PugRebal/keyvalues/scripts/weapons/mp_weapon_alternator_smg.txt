@@ -42,6 +42,12 @@ WeaponData
 			"viewkick_roll_softScale" 			"0.85"
 			"viewkick_scale_firstshot_hipfire"	"0.6"
 		}
+		blak_alt
+		{
+			"spread_air_hip"                                  "0"
+			"viewkick_hipfire_weaponFraction"                 "0.4"
+    		"viewkick_hipfire_weaponFraction_vmScale"         "2"
+		}
 		gunrunner_animation
 		{
 			"primary_fire_does_not_block_sprint"		"1"

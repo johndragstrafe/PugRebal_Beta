@@ -31,18 +31,19 @@ void function give_phasetp( entity player ) {
 	}
 }
 void function give_semi_alternator( entity player ) {
-	if (GetCurrentPlaylistVarInt( "riff_semialternator", 0 ) != 1) {
-		return
-	}
-	
-    array<entity> weapons = player.GetMainWeapons()
+	array<entity> weapons = player.GetMainWeapons()
     foreach (entity weapon in weapons) {
         if (weapon.GetWeaponClassName() == "mp_weapon_alternator_smg") {
-			/*if (weapon.HasMod("base_lowttk")) {
-				weapon.RemoveMod("base_lowttk") // game kills itself if u use both
-			}*/
-            tryaddmod_hahahaahahhaahahaha(weapon, "strafe_semi_alternator")
-			weapon.SetWeaponPrimaryClipCount(weapon.GetWeaponPrimaryClipCountMax())
+			if (GetCurrentPlaylistVarInt( "riff_semialternator", 0 ) == 0) {
+				weapon.SetWeaponPrimaryClipCount(weapon.GetWeaponPrimaryClipCountMax())
+				return
+			}else if(GetCurrentPlaylistVarInt("riff_semialternator", 0) == 2) {
+				tryaddmod_hahahaahahhaahahaha(weapon, "blak_alt")
+				weapon.SetWeaponPrimaryClipCount(weapon.GetWeaponPrimaryClipCountMax())
+			}else{
+				tryaddmod_hahahaahahhaahahaha(weapon, "strafe_semi_alternator")
+				weapon.SetWeaponPrimaryClipCount(weapon.GetWeaponPrimaryClipCountMax())
+			}
         }
     }
 }

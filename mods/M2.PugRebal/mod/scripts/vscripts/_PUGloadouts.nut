@@ -30,21 +30,72 @@ void function give_phasetp( entity player ) {
 		player.GiveOffhandWeapon( "mp_ability_shifter", OFFHAND_SPECIAL, ["phase_teleport"] )
 	}
 }
-void function give_semi_alternator( entity player ) {
+void function give_semi_alternator( entity player ) { // hatred incarnate 
 	array<entity> weapons = player.GetMainWeapons()
     foreach (entity weapon in weapons) {
-        if (weapon.GetWeaponClassName() == "mp_weapon_alternator_smg") {
-			if (GetCurrentPlaylistVarInt( "riff_semialternator", 0 ) == 0) {
-				weapon.SetWeaponPrimaryClipCount(weapon.GetWeaponPrimaryClipCountMax())
-				return
-			}else if(GetCurrentPlaylistVarInt("riff_semialternator", 0) == 2) {
-				tryaddmod_hahahaahahhaahahaha(weapon, "blak_alt")
-				weapon.SetWeaponPrimaryClipCount(weapon.GetWeaponPrimaryClipCountMax())
-			}else{
-				tryaddmod_hahahaahahhaahahaha(weapon, "strafe_semi_alternator")
-				weapon.SetWeaponPrimaryClipCount(weapon.GetWeaponPrimaryClipCountMax())
+		string name = weapon.GetWeaponClassName()
+        if (name != "mp_weapon_alternator_smg") {
+			return
+		}
+		string semialt = "strafe_semi_alternator"
+		string blkalt = "blak_alt"
+
+		array<string> appliedmods = weapon.GetMods()
+		array<string> availableMods = GetWeaponMods_Global(name)
+
+		if (GetCurrentPlaylistVarInt( "riff_semialternator", 0 ) == 0) {
+			foreach(string mod in appliedmods){
+				if(mod == semialt || mod == blkalt){
+					weapon.RemoveMod(mod)
+				}
 			}
-        }
+			trysetammo_hahahahahahhhahhahaah(weapon)
+			return
+		}else if(GetCurrentPlaylistVarInt("riff_semialternator", 0) == 2) {
+			
+			if(appliedmods.contains(semialt)){
+				foreach(string mod in appliedmods){
+					if(mod == semialt){
+						weapon.RemoveMod(mod)
+					}
+				}
+			}
+			
+			if(!availableMods.contains(blkalt)){ 
+				printt("sad blk")
+				trysetammo_hahahahahahhhahhahaah(weapon)
+				return
+			}
+
+			if(!appliedmods.contains(blkalt)){
+				tryaddmod_hahahaahahhaahahaha(weapon, blkalt)
+			}
+			
+			trysetammo_hahahahahahhhahhahaah(weapon)
+			return
+		}else{
+
+			if(appliedmods.contains(blkalt)){
+				foreach(mod in appliedmods){
+					if(mod == blkalt){
+						weapon.RemoveMod(mod)
+					}
+				}
+			}
+
+			if(!availableMods.contains(semialt)){
+				printt("no semi wahhhh")
+				trysetammo_hahahahahahhhahhahaah(weapon)
+				return
+			}
+
+			if(!appliedmods.contains(semialt)){
+				tryaddmod_hahahaahahhaahahaha(weapon, semialt)
+			}
+		
+			trysetammo_hahahahahahhhahhahaah(weapon)
+			return
+		}
     }
 }
 void function low_ttk_mods( entity player ) {
@@ -70,12 +121,10 @@ void function low_ttk_mods( entity player ) {
 				tryaddmod_hahahaahahhaahahaha(weapon, mod_lowttk)
 			}
 		}
-		tryaddmod_hahahaahahhaahahaha(weapon, "base_lowttk")
-		try {
-			int newammo = weapon.GetWeaponPrimaryClipCountMax()
-			weapon.SetWeaponPrimaryClipCount(newammo)
+		if(availableMods.contains("base_lowttk")){
+			tryaddmod_hahahaahahhaahahaha(weapon, "base_lowttk")
 		}
-		catch (ex) {}
+		trysetammo_hahahahahahhhahhahaah(weapon)
     }
 }
 
@@ -162,7 +211,7 @@ void function mastiff_pellets( entity player ) {
 }
 
 void function gunrunner_mods( entity player ) {
-	int gunrunnermode = GetCurrentPlaylistVarInt( "riff_gunrunner", 1 )
+	int gunrunnermode = GetCurrentPlaylistVarInt( "riff_gunrunner", 2 )
 	array<string> altgunrunner = [ "pas_run_and_gun", "", "gunrunner_animation", "gunrunner_sprintout" ]
 	if (gunrunnermode == 0) {
 		return
@@ -195,6 +244,17 @@ void function tryaddmod_hahahaahahhaahahaha(entity weapon, string mod) {
 			weapon.AddMod( mod )
 		}
 		catch(ex) {
-			//printt("DEBUG|| caught ex on " + mod + " : " + ex)
+			printt("DEBUG|| caught ex on " + mod + " : " + ex)
+		}
+}
+
+void function trysetammo_hahahahahahhhahhahaah(entity weapon){
+	try {
+			//printt("DEBUG|| try setammo: " + weapon.GetWeaponClassName())
+			int newammo = weapon.GetWeaponPrimaryClipCountMax()
+			weapon.SetWeaponPrimaryClipCount(newammo)
+		}
+		catch (ex) {
+			printt("DEBUG|| caught ex on " + weapon.GetWeaponClassName() + " : " + ex)
 		}
 }

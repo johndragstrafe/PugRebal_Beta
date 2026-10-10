@@ -4,7 +4,7 @@ void function Riff_BetaRebalInit()
 {
 	//QOL changes
 	AddPrivateMatchModeSettingEnum( "QOL Rebalances",
-		"pugs_highlander", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "0" )
+		"pugs_highlander", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "1" )
 	AddPrivateMatchModeSettingArbitrary( "QOL Rebalances",
 		"riff_aimpunch", "0.0" ) // default 0.0x
 	AddPrivateMatchModeSettingEnum( "QOL Rebalances",

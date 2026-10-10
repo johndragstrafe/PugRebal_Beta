@@ -1,8 +1,9 @@
 WeaponData
 {
-	"fire_rate" "7.5"
-	"fire_rate_max_time_speedup" "0.875"
-	"fire_rate_max_time_cooldown" "0.05"
+	"fire_rate"   					"5"
+	"fire_rate_max"					"1000"
+	"fire_rate_max_time_speedup"	"5"
+	"fire_rate_max_time_cooldown"	"0"
 
 	"looping_sounds"								"0"
 	"fire_sound_2_player_1p"						"weapon_devotion_firstshot_1p"

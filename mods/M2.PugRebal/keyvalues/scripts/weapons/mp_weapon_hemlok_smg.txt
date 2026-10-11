@@ -5,7 +5,7 @@ WeaponData
 	MP_BASE
 	{
 		"damage_very_far_value"								"13"
-		"damage_very_far_distance"							"3002"
+		"damage_very_far_distance"							"3030"
 		"damage_headshot_scale"								"1.4"
 		"spread_air_hip"  								"0"
 	}

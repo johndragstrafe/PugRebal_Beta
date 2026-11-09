@@ -18,6 +18,7 @@ void function OverridePUGPilotLoadout( entity player, PilotLoadoutDef loadout )
 	//toggle_Lstar_cancer(player) // depricated
 	toggle_lg_volt(player)
 	add_beckett_smoke(player)
+	disable_aim_assist(player)
 
 }
 void function give_phasetp( entity player ) {
@@ -30,6 +31,29 @@ void function give_phasetp( entity player ) {
 		player.GiveOffhandWeapon( "mp_ability_shifter", OFFHAND_SPECIAL, ["phase_teleport"] )
 	}
 }
+
+void function disable_aim_assist(entity player){
+	
+	array<entity> weapons = player.GetMainWeapons()
+	
+    foreach (entity weapon in weapons){
+		string name = weapon.GetWeaponClassName()
+		array<string> appliedmods = weapon.GetMods()
+		array<string> availableMods = GetWeaponMods_Global(name)
+		string mod_no_aa = "aim_assist_disable"
+
+		if(GetCurrentPlaylistVarInt( "riff_aimassist_enabled", 0 ) == 1){
+			if(appliedmods.contains(mod_no_aa)){
+				weapon.RemoveMod(mod_no_aa) // remove mod if aa is enabled
+			}
+		}else{
+			if(availableMods.contains(mod_no_aa) && !appliedmods.contains(mod_no_aa)){
+				weapon.tryaddmod_hahahaahahhaahahaha(mod_no_aa)
+			}
+		}
+    }
+}
+
 void function give_semi_alternator( entity player ) { // hatred incarnate 
 	array<entity> weapons = player.GetMainWeapons()
     foreach (entity weapon in weapons) {

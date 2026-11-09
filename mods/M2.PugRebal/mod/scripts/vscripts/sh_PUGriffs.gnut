@@ -4,6 +4,8 @@ void function Riff_BetaRebalInit()
 {
 	//QOL changes
 	AddPrivateMatchModeSettingEnum( "QOL Rebalances",
+		"riff_aimassist_enabled", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "0" ) //default disabled
+	AddPrivateMatchModeSettingEnum( "QOL Rebalances",
 		"pugs_highlander", [ "#SETTING_DISABLED", "#SETTING_ENABLED" ], "1" )
 	AddPrivateMatchModeSettingArbitrary( "QOL Rebalances",
 		"riff_aimpunch", "0.0" ) // default 0.0x
@@ -31,7 +33,7 @@ void function Riff_BetaRebalInit()
 	
 	//weapon balance options
 	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
-		"riff_ttktoggle", [ "High TTK (6.0)", "Low TTK (5.2)" ], "0" )
+		"riff_ttktoggle", [ "High TTK (6.0)", "Low TTK (5.2)" ], "1" ) // default old-bal
 	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
 		"riff_gunrunner", [ "Vanilla", "Banned", "Rework Animation", "Sprintout Time" ], "2" ) // default rework
 	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
@@ -39,7 +41,7 @@ void function Riff_BetaRebalInit()
 	AddPrivateMatchModeSettingEnum( "Weapon Rebalances", 
 		"riff_semialternator", ["Vanilla", "Semi-Auto", "MrBlaBlak"], "0")
 	AddPrivateMatchModeSettingEnum( "Weapon Rebalances", 
-		"riff_lgvolt", ["Vanilla", "Quake"], "1")
+		"riff_lgvolt", ["Vanilla", "Quake"], "0")
 	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",
 		"riff_beckett_smoke", ["Vanilla", "Firestar Toss"], "1")
 	AddPrivateMatchModeSettingEnum( "Weapon Rebalances",

@@ -1,0 +1,34 @@
+WeaponData
+{
+	Mods
+	{
+		iron_sights {}
+		scope_4x {}
+		threat_scope {}
+		pro_screen {}
+		tactical_cdr_on_kill {}
+		extended_ammo {}
+		stabilizer {}
+		ricochet {}
+		slammer {}
+		pas_fast_reload {}
+		pas_fast_ads {}
+		pas_fast_swap {}
+		burn_mod_doubletake
+		{
+			"damage_near_value"      "*0"
+			"damage_far_value"       "*0"
+			"damage_very_far_value"  "*0"
+			"tracer_effect" ""
+		}
+		aim_assist_disable
+		{
+			"aimassist_disable_hipfire"						"1"
+			"aimassist_disable_ads"							"1"
+			"aimassist_disable_hipfire_humansonly"			"1"
+			"aimassist_disable_ads_humansonly"				"1"
+			"aimassist_disable_hipfire_titansonly"			"1"
+			"aimassist_disable_ads_titansonly"				"1"
+		}
+	}
+}

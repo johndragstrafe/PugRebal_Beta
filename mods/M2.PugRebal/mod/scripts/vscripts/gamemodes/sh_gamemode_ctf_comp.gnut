@@ -80,6 +80,8 @@ void function InitCTFCompSpecificSettings()
 	#if SERVER
 		TrackTitanDamageInPlayerGameStat( PGS_DISTANCE_SCORE )
 		SetSpawnpointGamemodeOverride( CAPTURE_THE_FLAG )
+		AddCallback_GameStateEnter( eGameState.Prematch, CTFComp_OnPrematch_ResetTitanMeters )
+		AddCallback_GameStateEnter( eGameState.Playing, CTFComp_OnPlaying_ResetTitanMeters )
 		if ( GetMapName() == "mp_glitch" )
 		{
 			level.customOOBTimer = 3.0
@@ -138,6 +140,28 @@ void function InitCTFCompSpecificSettings()
 }
 
 #if SERVER
+void function CTFComp_OnPrematch_ResetTitanMeters(){
+	if (HasSwitchedSides() == 1)
+		CTFComp_ResetAllTitanMeters()
+}
+
+void function CTFComp_OnPlaying_ResetTitanMeters(){
+	if (HasSwitchedSides() == 1)
+		thread CTFComp_ResetAllTitanMetersNextFrame()
+}
+
+void function CTFComp_ResetAllTitanMetersNextFrame(){
+	WaitFrame() // run after all other playing callbacks so it actually runs after the initial meter setup
+	CTFComp_ResetAllTitanMeters()
+}
+
+void function CTFComp_ResetAllTitanMeters(){
+	foreach (entity player in GetPlayerArray()){
+		PlayerEarnMeter_Reset(player)
+		ClearTitanAvailable(player)
+	}
+}
+
 void function AngelCityReplaceFlags()
 {
 	foreach ( entity flagRef in GetEntArrayByClass_Expensive( "info_spawnpoint_flag" ) )

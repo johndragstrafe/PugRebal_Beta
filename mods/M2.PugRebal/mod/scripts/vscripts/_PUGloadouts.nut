@@ -48,7 +48,7 @@ void function disable_aim_assist(entity player){
 			}
 		}else{
 			if(availableMods.contains(mod_no_aa) && !appliedmods.contains(mod_no_aa)){
-				weapon.tryaddmod_hahahaahahhaahahaha(mod_no_aa)
+				tryaddmod_hahahaahahhaahahaha(weapon, mod_no_aa)
 			}
 		}
     }
